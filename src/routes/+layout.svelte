@@ -14,35 +14,25 @@
 		<!-- App Bar -->
 		<AppBar>
 			<svelte:fragment slot="lead">
-				<strong class="text-xl uppercase">Skeleton</strong>
+				<strong class="text-xl uppercase">Event Management System</strong>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
-				<a
-					class="btn btn-sm variant-ghost-surface"
-					href="https://discord.gg/EXqV7W8MtY"
-					target="_blank"
-					rel="noreferrer"
-				>
-					Discord
-				</a>
-				<a
-					class="btn btn-sm variant-ghost-surface"
-					href="https://twitter.com/SkeletonUI"
-					target="_blank"
-					rel="noreferrer"
-				>
-					Twitter
-				</a>
-				<a
-					class="btn btn-sm variant-ghost-surface"
-					href="https://github.com/skeletonlabs/skeleton"
-					target="_blank"
-					rel="noreferrer"
-				>
-					GitHub
-				</a>
+				<span>Admin</span>
+				<button type="button" class="btn variant-filled-surface">Log Out</button>
 			</svelte:fragment>
 		</AppBar>
+	</svelte:fragment>
+	<svelte:fragment slot="sidebarLeft">
+		<div class="h-full p-4 bg-slate-600/75">
+			<nav class="list-nav">
+				<ul>
+					<li><a href="/">Dashboard</a></li>	
+					<li><a href="/events">Manage Events</a></li>
+					<!-- <li><a href=""></a></li> -->
+					<!-- <li><a href=""></a></li> -->
+				</ul>
+			</nav>
+		</div>
 	</svelte:fragment>
 	<!-- Page Route Content -->
 	<slot />
