@@ -21,6 +21,7 @@
     "@tailwindcss/typography": "0.5.10",
     "@types/eslint": "8.56.0",
     "@types/node": "20.11.16",
+    "@types/pg": "^8.11.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "autoprefixer": "10.4.17",
@@ -41,6 +42,7 @@
   "type": "module",
   "dependencies": {
     "@floating-ui/dom": "1.6.1",
-    "@sveltejs/adapter-static": "^3.0.1"
+    "@sveltejs/adapter-static": "^3.0.1",
+    "pg": "^8.11.3"
   }
 }
