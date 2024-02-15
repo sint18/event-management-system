@@ -10,6 +10,9 @@ export async function load() {
 	       upper(status) as "Status"
 	    from events;
 	`, [])
-	const headers = Object.keys(result.rows[0]);
-	return { allEvents: result.rows, headers: headers}
+	if (result.rows) {
+		const headers = Object.keys(result.rows[0]);
+		return { allEvents: result.rows, headers: headers}
+	}
+	return { allEvents: [], headers: [] }
 }

@@ -8,6 +8,7 @@
 
 </script>
 <div class="p-10 space-y-5 container h-full justify-center">
+	<button type="button" on:click={() => {history.back()}} class="btn variant-filled-surface">Back</button>
 	<h2 class="h2">Event Information</h2>
 	{#if data.eventInfo }
 		<SlideToggle name="slider-label" bind:checked={readOnlyInputs}>Edit Information</SlideToggle>
