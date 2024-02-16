@@ -4,13 +4,13 @@ export async function load() {
 	select event_id as "Event ID",
 	       event_name as "Event Name",
 	       description as "Description",
-	       to_char(start_date, 'DD/MM/YYYY') as "Start Date",
-         to_char(end_date, 'DD/MM/YYYY') as "End Date",
-	       venue as "Venue",
+	       to_char(start_datetime, 'DD/MM/YYYY HH24:MI:SS') as "Start Date",
+         to_char(end_datetime, 'DD/MM/YYYY HH24:MI:SS') as "End Date",
+	       location as "Location",
 	       upper(status) as "Status"
 	    from events;
 	`, [])
-	if (result.rows) {
+	if (result.rows.length != 0) {
 		const headers = Object.keys(result.rows[0]);
 		return { allEvents: result.rows, headers: headers}
 	}

@@ -26,17 +26,17 @@
 
 			<label class="label">
 				<span>Event Start Date</span>
-				<input class="input" readonly={!readOnlyInputs} type="date" value={data.eventInfo['start_date'].toJSON().slice(0, 10)} name="startDate" />
+				<input class="input" readonly={!readOnlyInputs} type="datetime-local" value={data.eventInfo['start_datetime'].toJSON().slice(0, 10)} name="startDate" />
 			</label>
 
 			<label class="label">
 				<span>Event End Date</span>
-				<input class="input" readonly={!readOnlyInputs} type="date" value={data.eventInfo['end_date'].toJSON().slice(0, 10)} name="endDate" />
+				<input class="input" readonly={!readOnlyInputs} type="datetime-local" value={data.eventInfo['end_datetime'].toJSON().slice(0, 10)} name="endDate" />
 			</label>
 
 			<label class="label">
-				<span>Event Venue</span>
-				<input class="input" readonly={!readOnlyInputs} type="text" value={data.eventInfo['venue']} name="venue" placeholder="Enter name of the venue" />
+				<span>Event Location</span>
+				<input class="input" readonly={!readOnlyInputs} type="text" value={data.eventInfo['location']} name="location" placeholder="Enter name of the location" />
 			</label>
 
 			<label class="label">

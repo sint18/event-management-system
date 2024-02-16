@@ -7,13 +7,13 @@ export const actions = {
 		const description = <string>data.get('description')
 		const startDate = <string>data.get('startDate')
 		const endDate = <string> data.get('endDate')
-		const venue = <string>data.get('venue')
+		const location = <string>data.get('venue')
 		const status = <string>data.get('status')
 
 		const result = await db.query(
-			`INSERT INTO events (event_name, description, start_date, end_date, venue, organizer_id, status)
-		VALUES ($1, $2, $3, $4, $5, NULL, $6);`,
-			[eventName, description, startDate, endDate, venue, status])
+			`INSERT INTO events (event_name, description, start_datetime, end_datetime, location, organizer_id, status, category_id)
+		VALUES ($1, $2, $3, $4, $5, NULL, $6, $7);`,
+			[eventName, description, startDate, endDate, location, status, '2'])
 
 		console.log(result);
 

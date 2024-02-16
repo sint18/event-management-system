@@ -6,6 +6,11 @@ CREATE TABLE event_category
     last_updated  TIMESTAMP    NOT NULL DEFAULT now()
 );
 
+INSERT INTO event_category (category_name, last_updated)
+VALUES ('Careers and employability', now()),
+       ('University', now()),
+       ('Student Union', now());
+
 -- Create the Organizers table
 CREATE TABLE organizers
 (

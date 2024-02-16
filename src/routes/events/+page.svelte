@@ -21,8 +21,7 @@
 	}
 
 	// If sourceData updates, set the new TableSource values
-	$: tableSimple = data.allEvents ? setTableSource() : undefined;
-
+	$: tableSimple = data.allEvents.length != 0 ? setTableSource() : undefined;
 
 </script>
 <div class="p-10 space-y-5 container h-full justify-center">

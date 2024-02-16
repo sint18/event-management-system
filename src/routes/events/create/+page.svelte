@@ -24,12 +24,12 @@
 
 		<label class="label">
 			<span>Event Start Date</span>
-			<input class="input" type="date" name="startDate" />
+			<input class="input" type="datetime-local" name="startDate" />
 		</label>
 
 		<label class="label">
 			<span>Event End Date</span>
-			<input class="input" type="date" name="endDate" />
+			<input class="input" type="datetime-local" name="endDate" />
 		</label>
 
 		<label class="label">

@@ -6,9 +6,9 @@ export async function load({params}){
 	select event_id, 
 	       event_name,
 	       description,
-         start_date,
-         end_date,
-         venue,
+         start_datetime,
+         end_datetime,
+         location,
          status
 			from events where event_id = $1
        `, [eventId]
