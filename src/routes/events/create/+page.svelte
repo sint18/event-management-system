@@ -8,7 +8,10 @@
 	<h2 class="h2">Create An Event</h2>
 	<hr />
 	{#if form?.success}
-		<p>New Event Successfully Created!</p>
+		<p class="alert variant-ghost-success">New Event Successfully Created!</p>
+	{/if}
+	{#if form?.missing}
+		<p class="alert variant-ghost-error">{form?.item} is missing!</p>
 	{/if}
 	<form class="space-y-5" method="post" use:enhance>
 <!--		#TODO: Implement adding multimedia for events-->
@@ -47,7 +50,7 @@
 		</label>
 
 		<div class="grid grid-cols-6 gap-4">
-			<button type="submit" class="btn variant-filled-primary">Submit</button>
+			<button type="submit" class="btn variant-filled-primary">Create</button>
 			<button type="reset" class="btn variant-filled">Cancel</button>
 		</div>
 
