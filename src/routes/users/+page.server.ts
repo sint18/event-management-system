@@ -1,6 +1,5 @@
 import * as db from '$lib/server/db'
 import { fail } from '@sveltejs/kit';
-// import { redirect, fail } from '@sveltejs/kit';
 
 export async function load(){
 	const queryResult = await db.query(`
@@ -25,12 +24,16 @@ export const actions = {
 		console.log(data);
 
 		const username: string = <string>data.get('username')
+		const lastName: string = <string>data.get('lastName')
+		const firstName: string = <string>data.get('firstName')
 
 		if (isNaN(Number(username))) {
 			return fail(400, { error: true, errMessage: 'Username must be a number'})
 		}
 
-		const result = await db.query(`
+		let result
+		if (username) {
+			result = await db.query(`
         select users.user_id,
                users.username,
                users.first_name,
@@ -40,13 +43,24 @@ export const actions = {
         from users
         where username = $1;
 		`, [username])
+		} else if (firstName && lastName) {
+			result = await db.query(`
+        select users.user_id,
+               users.username,
+               users.first_name,
+               users.last_name,
+               users.email,
+               users.points
+        from users
+        where first_name ilike $1 and last_name ilike $2;
+		`, [firstName, lastName])
+		}
 
-		if (result.rowCount && result.rowCount > 0) {
-			// throw redirect(302, '/events/' + eventId)
+		if (result && result.rowCount && result.rowCount > 0) {
 			const headers = Object.keys(result.rows[0]);
 			return { userInfo: result.rows, headers: headers }
 		} else {
-			return fail(404, { incorrect: true, message: "No User Found"})
+			return fail(404, { error: true, errMessage: "No User Found"})
 		}
 	}
 }

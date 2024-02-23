@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { enhance } from '$app/forms';
 
 	export let data
@@ -11,37 +10,41 @@
 	<hr />
 	<a href="users/create" class="btn variant-filled">Create A New User</a>
 	<a href="users/import" class="btn variant-filled float-end">Import</a>
+	<h3 class="h3">User Search</h3>
 	{#if form?.error}
 		<p class="alert variant-ghost-error">{form?.errMessage}</p>
 	{/if}
-	<form method="post" use:enhance>
-		<div class="grid grid-cols-3 gap-4">
+	<form class="space-y-5" method="post" use:enhance>
+		<div class="grid grid-cols-2 gap-4">
+			<label class="label">
+				<span>First Name</span>
+				<input class="input" type="text" name="firstName" placeholder="Enter First Name" />
+			</label>
+			<label class="label">
+				<span>Last Name</span>
+				<input class="input" type="text" name="lastName" placeholder="Enter Last Name" />
+			</label>
 			<label class="label">
 				<span>Username</span>
 				<input class="input" type="search" name="username" placeholder="Enter Username" />
 			</label>
-<!--			#TODO: Implement searching with First name and last name-->
-<!--			<label class="label">-->
-<!--				<span>First Name</span>-->
-<!--				<input class="input" type="text" name="firstName" placeholder="Enter First Name" />-->
-<!--			</label>-->
-<!--			<label class="label">-->
-<!--				<span>Last Name</span>-->
-<!--				<input class="input" type="text" name="lastName" placeholder="Enter Last Name" />-->
-<!--			</label>-->
 		</div>
+		<button type="submit" class="btn variant-filled-surface">Search</button>
+		<button type="reset" class="btn variant-filled-surface">Clear</button>
 	</form>
+<!--	<hr />-->
 
 	<!-- Responsive Container (recommended) -->
 	<div class="table-container">
 		<!-- Native Table Element -->
-		<table class="table table-interactive">
+		<table class="table table-hover" >
 			{#if data.colHeaders}
 				<thead>
 				<tr>
 					{#each data.colHeaders as i}
 						<th>{i}</th>
 					{/each}
+					<th>Actions</th>
 				</tr>
 				</thead>
 			{/if}
@@ -55,11 +58,14 @@
 					<td>{row['last_name']}</td>
 					<td>{row['email']}</td>
 					<td>{row['points']}</td>
+					<td>
+							<a href="users/{row['user_id']}" class="btn btn-sm variant-filled-surface">View Details</a>
+					</td>
 				</tr>
 			{/each}
 				{:else}
 				<tr>
-					<td colspan="{data?.colHeaders?.length}" class="text-lg text-center">No data to display</td>
+					<td colspan="7" class="text-lg text-center">No data to display</td>
 				</tr>
 			{/if}
 			</tbody>
