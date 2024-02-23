@@ -5,8 +5,7 @@
 	// Floating UI for Popups
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';
-	import { Modal, getModalStore } from '@skeletonlabs/skeleton';
-	import type { ModalSettings, ModalComponent, ModalStore } from '@skeletonlabs/skeleton';
+	import { Modal } from '@skeletonlabs/skeleton';
 	import { initializeStores } from '@skeletonlabs/skeleton';
 
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
@@ -36,6 +35,7 @@
 				<ul>
 					<li><a href="/">Dashboard</a></li>	
 					<li><a href="/events">Manage Events</a></li>
+					<li><a href="/users">Manage Users</a></li>
 					<!-- <li><a href=""></a></li> -->
 					<!-- <li><a href=""></a></li> -->
 				</ul>
