@@ -88,7 +88,7 @@ CREATE TABLE bookings
     booking_id       SERIAL PRIMARY KEY,
     event_id         INT         NOT NULL,
     user_id          INT         NOT NULL,
-    booking_datetime TIMESTAMP   NOT NULL,
+    booking_datetime TIMESTAMP   NOT NULL DEFAULT now(),
     ticket_quantity  INT         NOT NULL DEFAULT 1,
     status           VARCHAR(20) NOT NULL,
     last_updated     TIMESTAMP   NOT NULL DEFAULT now(),
