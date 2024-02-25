@@ -120,11 +120,15 @@
 
 			<label class="label">
 				<span>Event Status</span>
-				<select class="select" name="status" value={data.eventInfo['status']} disabled={readOnlyInputs}>
-					<option value="upcoming">Upcoming</option>
-					<option value="past">Past</option>
-					<option value="canceled">Canceled</option>
-				</select>
+				{#if readOnlyInputs}
+					<input class="input capitalize" readonly={readOnlyInputs} type="text" bind:value={data.eventInfo['status']}/>
+				{:else}
+					<select class="select" name="status" value={data.eventInfo['status']} disabled={readOnlyInputs}>
+						<option value="upcoming">Upcoming</option>
+						<option value="past">Past</option>
+						<option value="canceled">Canceled</option>
+					</select>
+				{/if}
 			</label>
 
 			<label class="label">
