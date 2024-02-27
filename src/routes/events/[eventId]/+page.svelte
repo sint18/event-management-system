@@ -85,7 +85,7 @@
 		{#if form?.missing}
 			<p class="alert variant-ghost-error">{form?.item} is missing!</p>
 		{/if}
-		<form class="space-y-5" method="post" use:enhance bind:this={formElement}>
+		<form class="grid grid-cols-2 gap-4" method="post" use:enhance bind:this={formElement}>
 			<!--		#TODO: Implement adding multimedia for events-->
 			<input class="input" readonly={true} type="text" value={data.eventInfo['event_id']} name="eventId" hidden={true} />
 			<label class="label">
@@ -94,30 +94,22 @@
 			</label>
 
 			<label class="label">
-				<span>Description</span>
-				<textarea class="textarea" readonly={readOnlyInputs} rows="4" bind:value={data.eventInfo['description']} name="description" placeholder="Enter a short description about the event" />
+				<span>Event Location</span>
+				<input class="input" readonly={readOnlyInputs} type="text" bind:value={data.eventInfo['location']} name="location" placeholder="Enter name of the location"/>
 			</label>
 
 			<label class="label">
 				<span>Event Start Date</span>
 				<input class="input" readonly={readOnlyInputs} type="datetime-local" bind:value={data.eventInfo['start_datetime']} name="startDate"/>
 			</label>
-
 			<label class="label">
 				<span>Event End Date</span>
 				<input class="input" readonly={readOnlyInputs} type="datetime-local" bind:value={data.eventInfo['end_datetime']} name="endDate"/>
 			</label>
-
 			<label class="label">
 				<span>Event Duration</span>
 				<input class="input variant-ghost" readonly={true} type="text" bind:value={data.eventInfo['duration']} />
 			</label>
-
-			<label class="label">
-				<span>Event Location</span>
-				<input class="input" readonly={readOnlyInputs} type="text" bind:value={data.eventInfo['location']} name="location" placeholder="Enter name of the location"/>
-			</label>
-
 			<label class="label">
 				<span>Event Status</span>
 				{#if readOnlyInputs}
@@ -130,23 +122,30 @@
 					</select>
 				{/if}
 			</label>
-
 			<label class="label">
 				<span>Last Updated</span>
 				<input class="input variant-ghost" readonly={true} type="datetime-local" bind:value={data.eventInfo['last_updated']} />
 			</label>
-
 			<label class="label">
 				<span>Created Date</span>
 				<input class="input variant-ghost" readonly={true} type="datetime-local" bind:value={data.eventInfo['created_at']} />
 			</label>
 
-			{#if (!readOnlyInputs)}
-			<div class="grid grid-cols-6 gap-4">
-				<button type="button" class="btn variant-filled-primary" on:click={() => modalStore.trigger(updateModal)}>Save</button>
-				<button type="button" on:click={() => resetForm()} class="btn variant-filled">Cancel</button>
+			<div class="grid grid-cols-subgrid gap-4 col-span-2">
+				<div class="col-start-1">
+					<label class="label">
+						<span>Description</span>
+						<textarea class="textarea" readonly={readOnlyInputs} rows="4" bind:value={data.eventInfo['description']} name="description" placeholder="Enter a short description about the event" />
+					</label>
+				</div>
 			</div>
-				{/if}
+
+		{#if (!readOnlyInputs)}
+		<div class="grid grid-cols-6 gap-4">
+			<button type="button" class="btn variant-filled-primary" on:click={() => modalStore.trigger(updateModal)}>Save</button>
+			<button type="button" on:click={() => resetForm()} class="btn variant-filled">Cancel</button>
+		</div>
+			{/if}
 
 		</form>
 	{/if}

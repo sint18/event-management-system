@@ -52,9 +52,10 @@
 			<span class="capitalize">{comboboxValue ?? 'Trigger'}</span>
 		</button>
 
-		<div class="card p-4 w-48" data-popup="popupCombobox">
+		<div class="card p-4" data-popup="popupCombobox">
 			<div class="grid grid-cols-1 gap-2">
 				<button type="button" class="btn bg-transparent" on:click={() => {invalidateAll(); readOnly = true}}>Refresh</button>
+				<a href="/bookings/create?user={data.userInfo['username']}" class="btn bg-transparent">Create Booking</a>
 				<button type="button" class="btn bg-transparent" on:click={() => {readOnly = false}}>Edit Information</button>
 				<button class="btn variant-ghost-error">Delete User</button>
 			</div>
