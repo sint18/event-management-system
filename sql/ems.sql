@@ -89,6 +89,7 @@ CREATE TABLE bookings
     event_id         INT         NOT NULL,
     user_id          INT         NOT NULL,
     booking_datetime TIMESTAMP   NOT NULL DEFAULT now(),
+    booking_ref      VARCHAR(20) NOT NULL DEFAULT TO_CHAR(NOW(), 'YYYYMMDD') || LPAD(NEXTVAL('bookings_booking_id_seq')::TEXT, 4, '0'),
     ticket_quantity  INT         NOT NULL DEFAULT 1,
     status           VARCHAR(20) NOT NULL,
     last_updated     TIMESTAMP   NOT NULL DEFAULT now(),
