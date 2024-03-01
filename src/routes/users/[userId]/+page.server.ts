@@ -17,6 +17,10 @@ export async function load({ params }){
              users.points,
              r.role_name,
              users.role_id,
+             case users.active
+                 when true then 'active'
+                 when false then 'inactive'
+                 end                                              as account_status,
              to_char(users.last_updated, 'YYYY-MM-DD HH24:MI:SS') as last_updated,
              to_char(users.created_at, 'YYYY-MM-DD HH24:MI:SS')   as created_at
       from users
@@ -31,6 +35,7 @@ export async function load({ params }){
 
 	const queryBookings = await db.query(`
       select booking_id,
+             booking_ref,
              e.event_name,
              e.event_id,
              to_char(booking_datetime, 'DD/MM/YYYY HH24:MI:SS') as booking_datetime,
@@ -72,18 +77,48 @@ export const actions = {
 		}
 
 		const queryUpdate = await db.query(`
-		update users
-		set role_id      = $1,
-				first_name   = $2,
-				last_name    = $3,
-				username     = $4,
-				email        = $5,
-				last_updated = now()
-		where user_id = $6;
+        update users
+        set role_id      = $1,
+            first_name   = $2,
+            last_name    = $3,
+            username     = $4,
+            email        = $5,
+            last_updated = now()
+        where user_id = $6;
 		`, [roleId, firstName, lastName, username, email, userId])
 
 		if (queryUpdate.rowCount && queryUpdate.rowCount > 0) {
-			return { success: true }
+			return { success: true, message: "Record successfully updated" }
+		}
+	},
+	deactivateUser: async({request}) => {
+		const data = await request.formData()
+		const userId: string = <string>data.get('userId')
+
+		const query = await db.query(`
+        update users
+        set active = 'false',
+            last_updated = now()
+        where user_id = $1;
+		`, [userId])
+
+		if (query.rowCount && query.rowCount > 0) {
+			return { success: true, message: "User account has been deactivated" }
+		}
+	},
+	activateUser: async({request}) => {
+		const data = await request.formData()
+		const userId: string = <string>data.get('userId')
+
+		const query = await db.query(`
+        update users
+        set active = 'true',
+            last_updated = now()
+        where user_id = $1;
+		`, [userId])
+
+		if (query.rowCount && query.rowCount > 0) {
+			return { success: true, message: "User account has been activated successfully" }
 		}
 	}
 }

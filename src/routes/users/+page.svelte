@@ -33,7 +33,7 @@
 		<button type="reset" class="btn variant-filled-surface">Clear</button>
 	</form>
 <!--	<hr />-->
-
+	<h3 class="h3">Search Result</h3>
 	<!-- Responsive Container (recommended) -->
 	<div class="table-container">
 		<!-- Native Table Element -->

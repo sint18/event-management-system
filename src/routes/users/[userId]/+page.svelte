@@ -10,6 +10,8 @@
 	let formElement: HTMLFormElement
 	const modelStore = getModalStore()
 
+	$: active_class = data?.userInfo['account_status'] === 'active' ? 'variant-ghost-success' : 'variant-ghost-error'
+
 	// ---------------- Functions ----------------------------
 
  function submitUpdateReq(response: boolean){
@@ -18,6 +20,20 @@
 			formElement.requestSubmit()
 		}
  }
+
+	function submitDeReq(response: boolean){
+		if(response) {
+			formElement.action = "?/deactivateUser"
+			formElement.requestSubmit()
+		}
+	}
+
+	function submitActivateReq(response: boolean){
+		if(response) {
+			formElement.action = "?/activateUser"
+			formElement.requestSubmit()
+		}
+	}
 
 	// ---------------- Dropdown Config ----------------------
 	let comboboxValue: string = 'actions'
@@ -39,6 +55,26 @@
 		response: (r: boolean) => submitUpdateReq(r),
 	};
 
+	const deactModal: ModalSettings = {
+		type: 'confirm',
+		// Data
+		title: 'Please Confirm Account Deactivation',
+		body: 'Are you sure you wish to proceed?',
+		buttonTextConfirm: 'Deactivate',
+		// TRUE if confirm pressed, FALSE if cancel pressed
+		response: (r: boolean) => submitDeReq(r),
+	};
+
+	const activateModal: ModalSettings = {
+		type: 'confirm',
+		// Data
+		title: 'Please Confirm Account Activation',
+		body: 'Are you sure you wish to proceed?',
+		buttonTextConfirm: 'Activate',
+		// TRUE if confirm pressed, FALSE if cancel pressed
+		response: (r: boolean) => submitActivateReq(r),
+	};
+
 </script>
 <!-- #TODO: view, edit and delete bookings of each user -->
 <div class="p-10 space-y-5 container h-full justify-center">
@@ -57,11 +93,18 @@
 				<button type="button" class="btn bg-transparent" on:click={() => {invalidateAll(); readOnly = true}}>Refresh</button>
 				<a href="/bookings/create?user={data.userInfo['username']}" class="btn bg-transparent">Create Booking</a>
 				<button type="button" class="btn bg-transparent" on:click={() => {readOnly = false}}>Edit Information</button>
-				<button class="btn variant-ghost-error">Delete User</button>
+				{#if data.userInfo['account_status'] === 'active'}
+					<button class="btn variant-ghost-error" on:click={() => modelStore.trigger(deactModal)}>Deactivate User</button>
+				{:else}
+					<button class="btn variant-ghost-success" on:click={() => modelStore.trigger(activateModal)}>Activate User</button>
+				{/if}
+<!--				<button class="btn variant-ghost-error">Delete User</button>-->
 			</div>
 		</div>
 		{#if form?.success }
-			<p class="alert variant-ghost-success">Record Successfully Updated!</p>
+			{#if form?.message}
+				<p class="alert variant-ghost-success">{form.message}</p>
+			{/if}
 		{/if}
 		{#if form?.error }
 			<p class="alert variant-ghost-error">{form.errMessage}</p>
@@ -109,14 +152,15 @@
 				<input name="email" class="input" type="email" placeholder="Enter email address" bind:value={data.userInfo['email']} readonly={readOnly}/>
 			</label>
 
-			<div class="grid grid-cols-subgrid gap-4 col-span-2">
-				<div class="col-start-1">
-					<label class="label">
-						<span>Earned Points</span>
-						<input class="input" type="number" placeholder="" bind:value={data.userInfo['points']} readonly={true}/>
-					</label>
-				</div>
-			</div>
+			<label class="label">
+				<span>Earned Points</span>
+				<input class="input" type="number" placeholder="" bind:value={data.userInfo['points']} readonly={true}/>
+			</label>
+
+			<label class="label">
+				<span>Account Status</span>
+				<input class="input uppercase {active_class}" type="text" placeholder="" bind:value={data.userInfo['account_status']} readonly={true}/>
+			</label>
 
 			<label class="label">
 				<span>Last Updated</span>
@@ -135,8 +179,8 @@
 				</div>
 			{/if}
 		</form>
-		<h3 class="h3">Bookings</h3>
 		<hr>
+		<h3 class="h3">Bookings</h3>
 		<!-- Responsive Container (recommended) -->
 			<div class="table-container">
 				<!-- Native Table Element -->
@@ -149,10 +193,11 @@
 						<th>Seats</th>
 						<th>Status</th>
 						<th>Last Updated</th>
+						<th></th>
 					</tr>
 					</thead>
 					<tbody>
-					{#if data.bookings }
+					{#if data.bookings?.length && data.bookings?.length > 0 }
 						{#each data.bookings as row }
 							<tr>
 								<td>{row['booking_id']}</td>
@@ -161,11 +206,14 @@
 								<td>{row['ticket_quantity']}</td>
 								<td class="capitalize">{row['status']}</td>
 								<td>{row['last_updated']}</td>
+								<td>
+									<a href="/bookings/{row['booking_ref']}" class="btn btn-sm variant-filled-surface">View Details</a>
+								</td>
 							</tr>
 						{/each}
 					{:else}
 						<tr>
-							<td colspan="6">No data to display</td>
+							<td colspan="7" class="text-center">No data to display</td>
 						</tr>
 					{/if}
 					</tbody>
