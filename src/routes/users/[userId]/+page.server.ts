@@ -9,27 +9,41 @@ export async function load({ params }){
 	}
 
 	const queryUserInfo = await db.query(`
-	select users.user_id,
-       users.username,
-       users.first_name,
-       users.last_name,
-       users.email,
-       users.points,
-       r.role_name,
-       users.role_id,
-			 to_char(users.last_updated, 'YYYY-MM-DD HH24:MI:SS') as last_updated,
-			 to_char(users.created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at
-	from users
-	inner join roles r on r.role_id = users.role_id
-	where users.user_id = $1;
+      select users.user_id,
+             users.username,
+             users.first_name,
+             users.last_name,
+             users.email,
+             users.points,
+             r.role_name,
+             users.role_id,
+             to_char(users.last_updated, 'YYYY-MM-DD HH24:MI:SS') as last_updated,
+             to_char(users.created_at, 'YYYY-MM-DD HH24:MI:SS')   as created_at
+      from users
+               inner join roles r on r.role_id = users.role_id
+      where users.user_id = $1;
 	`, [userId])
 
 	const queryRoles = await db.query(`
-	select role_id, role_name from roles;
+      select role_id, role_name
+      from roles;
 	`, [])
 
+	const queryBookings = await db.query(`
+      select booking_id,
+             e.event_name,
+             e.event_id,
+             to_char(booking_datetime, 'DD/MM/YYYY HH24:MI:SS') as booking_datetime,
+             ticket_quantity,
+             bookings.status,
+             to_char(bookings.last_updated, 'DD/MM/YYYY HH24:MI:SS') as last_updated
+      from bookings
+               inner join events e on bookings.event_id = e.event_id
+      where user_id = $1;
+	`, [userId])
+
 	if(queryUserInfo.rowCount && queryRoles.rowCount && queryUserInfo.rowCount > 0 && queryRoles.rowCount > 0) {
-		return { userInfo: queryUserInfo.rows[0], roles: queryRoles.rows }
+		return { userInfo: queryUserInfo.rows[0], roles: queryRoles.rows, bookings: queryBookings.rows }
 	}
 }
 

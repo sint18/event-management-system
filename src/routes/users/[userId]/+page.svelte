@@ -137,6 +137,41 @@
 		</form>
 		<h3 class="h3">Bookings</h3>
 		<hr>
+		<!-- Responsive Container (recommended) -->
+			<div class="table-container">
+				<!-- Native Table Element -->
+				<table class="table table-hover">
+					<thead>
+					<tr>
+						<th>Booking ID</th>
+						<th>Event</th>
+						<th>Booking Date</th>
+						<th>Seats</th>
+						<th>Status</th>
+						<th>Last Updated</th>
+					</tr>
+					</thead>
+					<tbody>
+					{#if data.bookings }
+						{#each data.bookings as row }
+							<tr>
+								<td>{row['booking_id']}</td>
+								<td>{row['event_name']}</td>
+								<td>{row['booking_datetime']}</td>
+								<td>{row['ticket_quantity']}</td>
+								<td class="capitalize">{row['status']}</td>
+								<td>{row['last_updated']}</td>
+							</tr>
+						{/each}
+					{:else}
+						<tr>
+							<td colspan="6">No data to display</td>
+						</tr>
+					{/if}
+					</tbody>
+				</table>
+			</div>
+
 
 
 	{/if}

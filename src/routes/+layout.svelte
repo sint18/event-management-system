@@ -36,7 +36,7 @@
 					<li><a href="/">Dashboard</a></li>	
 					<li><a href="/events">Manage Events</a></li>
 					<li><a href="/users">Manage Users</a></li>
-					<!-- <li><a href=""></a></li> -->
+<!--					 <li><a href="/bookings">Manage Bookings</a></li>-->
 					<!-- <li><a href=""></a></li> -->
 				</ul>
 			</nav>
