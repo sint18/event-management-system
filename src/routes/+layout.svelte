@@ -33,10 +33,10 @@
 		<div class="h-full p-4 bg-slate-600/75">
 			<nav class="list-nav">
 				<ul>
-					<li><a href="/">Dashboard</a></li>	
+					<li><a href="/">Dashboard</a></li>
 					<li><a href="/events">Manage Events</a></li>
 					<li><a href="/users">Manage Users</a></li>
-<!--					 <li><a href="/bookings">Manage Bookings</a></li>-->
+					<li><a href="/bookings">Manage Bookings</a></li>
 					<!-- <li><a href=""></a></li> -->
 				</ul>
 			</nav>

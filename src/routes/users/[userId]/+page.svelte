@@ -193,7 +193,7 @@
 						<th>Seats</th>
 						<th>Status</th>
 						<th>Last Updated</th>
-						<th></th>
+						<th>Actions</th>
 					</tr>
 					</thead>
 					<tbody>
