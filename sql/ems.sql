@@ -93,6 +93,7 @@ CREATE TABLE bookings
                                                   LPAD(NEXTVAL('bookings_booking_id_seq')::TEXT, 4, '0') UNIQUE,
     ticket_quantity  INT         NOT NULL DEFAULT 1,
     status           VARCHAR(20) NOT NULL,
+    remark           TEXT,
     last_updated     TIMESTAMP   NOT NULL DEFAULT now(),
     CONSTRAINT fk_event_id
         FOREIGN KEY (event_id) REFERENCES events (event_id),
