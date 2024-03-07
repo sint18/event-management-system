@@ -30,7 +30,7 @@
 				<p>Booking successful for user: {form?.user}.</p>
 			</div>
 			<!-- Actions -->
-			<div class="alert-actions"><a href="{form?.bookingId}" class="btn variant-filled-surface">View Booking</a></div>
+			<div class="alert-actions"><a href="{form?.bookingRef}" class="btn variant-filled-surface">View Booking</a></div>
 		</aside>
 	{/if}
 	{#if form?.error}

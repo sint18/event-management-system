@@ -49,11 +49,11 @@ export const actions = {
 		const queryResult = await db.query(`
         insert into bookings (event_id, user_id, status, ticket_quantity)
         values ($1, $2, $3, $4)
-        returning booking_id;
+        returning booking_ref;
 		`, [eventId, userId, 'booked', ticketQty]);
 
 		if (queryResult.rowCount && queryResult.rowCount > 0) {
-			return { success: true, user: user, bookingId: queryResult.rows[0]['booking_id']}
+			return { success: true, user: user, bookingRef: queryResult.rows[0]['booking_ref']}
 		}
 	}
 }
