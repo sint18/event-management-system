@@ -127,7 +127,7 @@
 				<div class="col-start-1">
 
 
-					<label class="label" hidden={!data.bookingInfo['remark']}>
+					<label class="label" hidden={data.bookingInfo['remark'] ? false: hideTextarea}>
 						<span>Reason for cancellation</span>
 						{#if data.bookingInfo['remark']}
 							<textarea class="textarea" rows="4" name="remark" readonly bind:value={data.bookingInfo['remark']}/>
