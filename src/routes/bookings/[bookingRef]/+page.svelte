@@ -4,21 +4,15 @@
 	import { popup, getModalStore } from '@skeletonlabs/skeleton';
 	import type { PopupSettings, ModalSettings } from '@skeletonlabs/skeleton';
 
+	const modalStore = getModalStore()
 	export let data
 	export let form
 	let formElement: HTMLFormElement
 	let readOnly: boolean = true
 	let comboboxValue: string = 'actions'
-	const modalStore = getModalStore()
 	let hideTextarea: boolean = true
+	$: activeClass = data.bookingInfo['status'] === 'cancelled' ? 'variant-ghost-error' : ''
 	// ---------- Functions ----------------------
-
-	function amendBooking(response: string){
-		if (response) {
-			formElement.action = "?/amendBooking"
-			formElement.requestSubmit()
-		}
-	}
 
 	function selectHandler(this: any) {
 		hideTextarea = this.value !== 'cancelled';
@@ -29,7 +23,28 @@
 		type: 'confirm',
 		title: 'Update Booking',
 		body: 'Are you sure you wish to amend this booking?',
-		response: r => amendBooking(r)
+		response: r => {
+			if (r) {
+				formElement.action = "?/amendBooking"
+				formElement.requestSubmit()
+			}
+		}
+	};
+
+	const sendEmailModal: ModalSettings = {
+		type: 'prompt',
+		title: 'Send Booking Information Email',
+		body: 'Do you want to send Booking Information email to the Email address below?',
+		value: data.bookingInfo['email'],
+		valueAttr: { type: 'text', required: true, placeholder: 'Enter Email Address . . .' },
+		buttonTextSubmit: 'Send',
+		response: r => {
+			if (r) {
+				data.bookingInfo['email'] = r
+				formElement.action = "?/sendEmail"
+				formElement.requestSubmit()
+			}
+		}
 	};
 
 	const popupCombobox: PopupSettings = {
@@ -52,7 +67,7 @@
 		<div class="card p-4 w-48" data-popup="popupCombobox">
 			<div class="grid grid-cols-1 gap-2">
 				<button type="button" class="btn bg-transparent" on:click={() => {invalidateAll(); readOnly = true}}>Refresh</button>
-				<button type="button" class="btn bg-transparent">Resend Email</button>
+				<button type="button" class="btn bg-transparent" on:click={() => {modalStore.trigger(sendEmailModal)}}>Resend Email</button>
 				<button type="button" class="btn bg-transparent" on:click={() => {readOnly = false}}>Amend Booking</button>
 			</div>
 		</div>
@@ -61,9 +76,14 @@
 			<p class="alert variant-ghost-success">{form?.message}</p>
 		{/if}
 		{#if form?.error}
-			<p class="alert variant-ghost-error">{form?.message} is missing!</p>
+			<p class="alert variant-ghost-error">{form?.message}</p>
 		{/if}
-		<form class="grid grid-cols-2 gap-4" method="post" use:enhance bind:this={formElement}>
+		<form class="grid grid-cols-2 gap-4" method="post" use:enhance={({formData, action}) => {
+			if (action.search === '?/sendEmail') {
+				formData.append('email', data.bookingInfo['email'])
+			}
+			return async ({update}) => {update()}
+		}} bind:this={formElement}>
 			<input class="input" readonly={true} type="text" value={data.bookingInfo['booking_id']} name="bookingId" hidden={true} />
 			<label class="label">
 				<span>Booking Reference No.</span>
@@ -83,7 +103,7 @@
 			<label class="label">
 				<span>Booking Status</span>
 				{#if readOnly}
-					<input class="input capitalize" readonly={true} type="text" bind:value={data.bookingInfo['status']}/>
+					<input class="input capitalize {activeClass}" readonly={true} type="text" bind:value={data.bookingInfo['status']}/>
 				{:else}
 					<select class="select" name="status" on:change={selectHandler} value={data.bookingInfo['status']}>
 						<option value="booked">Booked</option>
@@ -110,7 +130,7 @@
 					<label class="label" hidden={!data.bookingInfo['remark']}>
 						<span>Reason for cancellation</span>
 						{#if data.bookingInfo['remark']}
-							<textarea class="textarea" rows="4" name="remark" readonly value={data.bookingInfo['remark']}/>
+							<textarea class="textarea" rows="4" name="remark" readonly bind:value={data.bookingInfo['remark']}/>
 						{:else}
 							<textarea class="textarea" rows="4" placeholder="Reason for cancellation" name="remark" required={!hideTextarea}/>
 						{/if}

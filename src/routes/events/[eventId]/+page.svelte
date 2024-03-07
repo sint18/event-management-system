@@ -4,30 +4,16 @@
 	import { popup, getModalStore } from '@skeletonlabs/skeleton';
 	import type { PopupSettings, ModalSettings } from '@skeletonlabs/skeleton';
 
-	export let data
-	export let form
-	let readOnlyInputs: boolean = true
-	let formElement: HTMLFormElement
+	export let data;
+	export let form;
+	let readOnlyInputs: boolean = true;
+	let formElement: HTMLFormElement;
 	const modalStore = getModalStore();
 
 	// --------------- Functions ----------------------
-	function deleteEvent(response: boolean) {
-		if (response){
-			formElement.action = "?/delete"
-			formElement.requestSubmit()
-		}
-	}
-
-	function updateEvent(response: boolean){
-		if(response){
-			formElement.action = "?/update"
-			formElement.requestSubmit()
-		}
-	}
-
-	function resetForm(){
-		invalidateAll()
-		readOnlyInputs = true
+	function resetForm() {
+		invalidateAll();
+		readOnlyInputs = true;
 	}
 
 	// ---------- Modal Config -------------------
@@ -38,7 +24,12 @@
 		body: 'Are you sure you wish to proceed?',
 		buttonTextConfirm: 'Delete',
 		// TRUE if confirm pressed, FALSE if cancel pressed
-		response: (r: boolean) => deleteEvent(r),
+		response: (response: boolean) => {
+			if (response) {
+				formElement.action = '?/delete';
+				formElement.requestSubmit();
+			}
+		}
 	};
 
 	const updateModal: ModalSettings = {
@@ -48,11 +39,16 @@
 		body: 'Are you sure you wish to proceed?',
 		buttonTextConfirm: 'Update',
 		// TRUE if confirm pressed, FALSE if cancel pressed
-		response: (r: boolean) => updateEvent(r),
+		response: (response: boolean) => {
+			if (response) {
+				formElement.action = '?/update';
+				formElement.requestSubmit();
+			}
+		}
 	};
 
 	// ------------ Dropdown Config --------------
-	let comboboxValue: string = 'actions'
+	let comboboxValue: string = 'actions';
 
 	const popupCombobox: PopupSettings = {
 		event: 'click',
@@ -74,7 +70,8 @@
 		<div class="card p-4 w-48" data-popup="popupCombobox">
 			<div class="grid grid-cols-1 gap-2">
 				<button type="button" class="btn bg-transparent" on:click={() => resetForm()}>Refresh</button>
-				<button type="button" class="btn bg-transparent" on:click={() => {readOnlyInputs = false}}>Edit Information</button>
+				<button type="button" class="btn bg-transparent" on:click={() => {readOnlyInputs = false}}>Edit Information
+				</button>
 				<button on:click={() => {modalStore.trigger(modal)}} class="btn variant-ghost-error">Delete Event</button>
 			</div>
 		</div>
@@ -87,24 +84,29 @@
 		{/if}
 		<form class="grid grid-cols-2 gap-4" method="post" use:enhance bind:this={formElement}>
 			<!--		#TODO: Implement adding multimedia for events-->
-			<input class="input" readonly={true} type="text" value={data.eventInfo['event_id']} name="eventId" hidden={true} />
+			<input class="input" readonly={true} type="text" value={data.eventInfo['event_id']} name="eventId"
+						 hidden={true} />
 			<label class="label">
 				<span>Event Name</span>
-				<input class="input" readonly={readOnlyInputs} type="text" bind:value={data.eventInfo['event_name']} name="eventName" placeholder="Enter name of the event"/>
+				<input class="input" readonly={readOnlyInputs} type="text" bind:value={data.eventInfo['event_name']}
+							 name="eventName" placeholder="Enter name of the event" />
 			</label>
 
 			<label class="label">
 				<span>Event Location</span>
-				<input class="input" readonly={readOnlyInputs} type="text" bind:value={data.eventInfo['location']} name="location" placeholder="Enter name of the location"/>
+				<input class="input" readonly={readOnlyInputs} type="text" bind:value={data.eventInfo['location']}
+							 name="location" placeholder="Enter name of the location" />
 			</label>
 
 			<label class="label">
 				<span>Event Start Date</span>
-				<input class="input" readonly={readOnlyInputs} type="datetime-local" bind:value={data.eventInfo['start_datetime']} name="startDate"/>
+				<input class="input" readonly={readOnlyInputs} type="datetime-local"
+							 bind:value={data.eventInfo['start_datetime']} name="startDate" />
 			</label>
 			<label class="label">
 				<span>Event End Date</span>
-				<input class="input" readonly={readOnlyInputs} type="datetime-local" bind:value={data.eventInfo['end_datetime']} name="endDate"/>
+				<input class="input" readonly={readOnlyInputs} type="datetime-local" bind:value={data.eventInfo['end_datetime']}
+							 name="endDate" />
 			</label>
 			<label class="label">
 				<span>Event Duration</span>
@@ -113,7 +115,7 @@
 			<label class="label">
 				<span>Event Status</span>
 				{#if readOnlyInputs}
-					<input class="input capitalize" readonly={readOnlyInputs} type="text" bind:value={data.eventInfo['status']}/>
+					<input class="input capitalize" readonly={readOnlyInputs} type="text" bind:value={data.eventInfo['status']} />
 				{:else}
 					<select class="select" name="status" value={data.eventInfo['status']} disabled={readOnlyInputs}>
 						<option value="upcoming">Upcoming</option>
@@ -124,27 +126,32 @@
 			</label>
 			<label class="label">
 				<span>Last Updated</span>
-				<input class="input variant-ghost" readonly={true} type="datetime-local" bind:value={data.eventInfo['last_updated']} />
+				<input class="input variant-ghost" readonly={true} type="datetime-local"
+							 bind:value={data.eventInfo['last_updated']} />
 			</label>
 			<label class="label">
 				<span>Created Date</span>
-				<input class="input variant-ghost" readonly={true} type="datetime-local" bind:value={data.eventInfo['created_at']} />
+				<input class="input variant-ghost" readonly={true} type="datetime-local"
+							 bind:value={data.eventInfo['created_at']} />
 			</label>
 
 			<div class="grid grid-cols-subgrid gap-4 col-span-2">
 				<div class="col-start-1">
 					<label class="label">
 						<span>Description</span>
-						<textarea class="textarea" readonly={readOnlyInputs} rows="4" bind:value={data.eventInfo['description']} name="description" placeholder="Enter a short description about the event" />
+						<textarea class="textarea" readonly={readOnlyInputs} rows="4" bind:value={data.eventInfo['description']}
+											name="description" placeholder="Enter a short description about the event" />
 					</label>
 				</div>
 			</div>
 
-		{#if (!readOnlyInputs)}
-		<div class="grid grid-cols-6 gap-4">
-			<button type="button" class="btn variant-filled-primary" on:click={() => modalStore.trigger(updateModal)}>Save</button>
-			<button type="button" on:click={() => resetForm()} class="btn variant-filled">Cancel</button>
-		</div>
+			{#if (!readOnlyInputs)}
+				<div class="grid grid-cols-6 gap-4">
+					<button type="button" class="btn variant-filled-primary" on:click={() => modalStore.trigger(updateModal)}>
+						Save
+					</button>
+					<button type="button" on:click={() => resetForm()} class="btn variant-filled">Cancel</button>
+				</div>
 			{/if}
 
 		</form>

@@ -12,29 +12,6 @@
 
 	$: active_class = data?.userInfo['account_status'] === 'active' ? 'variant-ghost-success' : 'variant-ghost-error'
 
-	// ---------------- Functions ----------------------------
-
- function submitUpdateReq(response: boolean){
-		if(response) {
-			formElement.action = "?/updateUser"
-			formElement.requestSubmit()
-		}
- }
-
-	function submitDeReq(response: boolean){
-		if(response) {
-			formElement.action = "?/deactivateUser"
-			formElement.requestSubmit()
-		}
-	}
-
-	function submitActivateReq(response: boolean){
-		if(response) {
-			formElement.action = "?/activateUser"
-			formElement.requestSubmit()
-		}
-	}
-
 	// ---------------- Dropdown Config ----------------------
 	let comboboxValue: string = 'actions'
 
@@ -52,7 +29,12 @@
 		body: 'Are you sure you wish to proceed?',
 		buttonTextConfirm: 'Update',
 		// TRUE if confirm pressed, FALSE if cancel pressed
-		response: (r: boolean) => submitUpdateReq(r),
+		response: (response: boolean) => {
+			if(response) {
+				formElement.action = "?/updateUser"
+				formElement.requestSubmit()
+			}
+		},
 	};
 
 	const deactModal: ModalSettings = {
@@ -62,7 +44,12 @@
 		body: 'Are you sure you wish to proceed?',
 		buttonTextConfirm: 'Deactivate',
 		// TRUE if confirm pressed, FALSE if cancel pressed
-		response: (r: boolean) => submitDeReq(r),
+		response: (response: boolean) => {
+			if(response) {
+				formElement.action = "?/deactivateUser"
+				formElement.requestSubmit()
+			}
+		},
 	};
 
 	const activateModal: ModalSettings = {
@@ -72,7 +59,12 @@
 		body: 'Are you sure you wish to proceed?',
 		buttonTextConfirm: 'Activate',
 		// TRUE if confirm pressed, FALSE if cancel pressed
-		response: (r: boolean) => submitActivateReq(r),
+		response: (response: boolean) => {
+			if(response) {
+				formElement.action = "?/activateUser"
+				formElement.requestSubmit()
+			}
+		},
 	};
 
 </script>
