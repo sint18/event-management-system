@@ -1,4 +1,5 @@
 import * as db from '$lib/server/db';
+import { hash } from '$lib/server/crypto'
 import { fail } from '@sveltejs/kit';
 
 export async function load(){
@@ -45,10 +46,12 @@ export const actions = {
 
 		}
 
+		const hashedPassword = await hash(password)
+
 		const queryResult = await db.query(`
         insert into users (role_id, username, password, email, first_name, last_name)
         values ($1, $2, $3, $4, $5, $6);
-		`, [roleId, username, password, email, firstName, lastName])
+		`, [roleId, username, hashedPassword, email, firstName, lastName])
 
 		if (queryResult.rowCount && queryResult.rowCount > 0) {
 			return { success: true, message: 'A new user successfully registered' }
