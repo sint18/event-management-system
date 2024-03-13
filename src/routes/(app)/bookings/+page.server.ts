@@ -1,5 +1,5 @@
 import * as db from '$lib/server/db'
-import { error, fail } from '@sveltejs/kit'
+import { fail } from '@sveltejs/kit'
 
 export const actions = {
 	default: async ({request}) => {
