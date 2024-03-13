@@ -1,11 +1,13 @@
-import * as db from '$lib/server/db'
-import { error, fail } from '@sveltejs/kit'
+import * as db from '$lib/server/db';
+import { error, fail } from '@sveltejs/kit';
+import type { QueryResult } from 'pg';
 
-export async function load({ params }){
-	const userId = params.userId
+export async function load({ url, params }) {
+	const userId = params.userId;
+	const bookingFilter = url.searchParams.get('filter');
 
-	if(isNaN(Number(userId))){
-		error(404, 'Not Found')
+	if (isNaN(Number(userId))) {
+		error(404, 'Not Found');
 	}
 
 	const queryUserInfo = await db.query(`
@@ -26,54 +28,71 @@ export async function load({ params }){
       from users
                inner join roles r on r.role_id = users.role_id
       where users.user_id = $1;
-	`, [userId])
+	`, [userId]);
 
 	const queryRoles = await db.query(`
       select role_id, role_name
       from roles;
-	`, [])
+	`, []);
 
-	const queryBookings = await db.query(`
+	let queryBookings: QueryResult
+	if (!bookingFilter || bookingFilter === 'none') {
+		queryBookings = await db.query(`
       select booking_id,
              booking_ref,
              e.event_name,
              e.event_id,
-             to_char(booking_datetime, 'DD/MM/YYYY HH24:MI:SS') as booking_datetime,
+             to_char(booking_datetime, 'DD/MM/YYYY HH24:MI:SS')      as booking_datetime,
              ticket_quantity,
              bookings.status,
              to_char(bookings.last_updated, 'DD/MM/YYYY HH24:MI:SS') as last_updated
       from bookings
                inner join events e on bookings.event_id = e.event_id
       where user_id = $1;
-	`, [userId])
+	`, [userId]);
+	} else {
+		queryBookings = await db.query(`
+      select booking_id,
+             booking_ref,
+             e.event_name,
+             e.event_id,
+             to_char(booking_datetime, 'DD/MM/YYYY HH24:MI:SS')      as booking_datetime,
+             ticket_quantity,
+             bookings.status,
+             to_char(bookings.last_updated, 'DD/MM/YYYY HH24:MI:SS') as last_updated
+      from bookings
+               inner join events e on bookings.event_id = e.event_id
+      where user_id = $1 and bookings.status = $2;
+	`, [userId, bookingFilter]);
+	}
 
-	if(queryUserInfo.rowCount && queryRoles.rowCount && queryUserInfo.rowCount > 0 && queryRoles.rowCount > 0) {
-		return { userInfo: queryUserInfo.rows[0], roles: queryRoles.rows, bookings: queryBookings.rows }
+	if (queryUserInfo.rowCount && queryRoles.rowCount && queryUserInfo.rowCount > 0 && queryRoles.rowCount > 0) {
+		return { userInfo: queryUserInfo.rows[0], roles: queryRoles.rows, bookings: queryBookings.rows };
 	}
 }
 
 export const actions = {
-	updateUser: async({ request }) => {
+	updateUser: async ({ request }) => {
 		const data = await request.formData();
 		// console.log(data);
-		const userId: string = <string>data.get('userId')
-		const roleId: string = <string>data.get('roleId')
-		const firstName: string = <string>data.get('firstName')
-		const lastName: string = <string>data.get('lastName')
-		const username: string = <string>data.get('username')
-		const email: string = <string>data.get('email')
+		const userId: string = <string>data.get('userId');
+		const roleId: string = <string>data.get('roleId');
+		const firstName: string = <string>data.get('firstName');
+		const lastName: string = <string>data.get('lastName');
+		const username: string = <string>data.get('username');
+		const email: string = <string>data.get('email');
 
 		if (!firstName) {
-			return fail(400, {error: true, errMessage: 'First Name field cannot be empty'})
+			return fail(400, { error: true, errMessage: 'First Name field cannot be empty' });
 		}
 		if (!lastName) {
-			return fail(400, {error: true, errMessage: 'Last Name field cannot be empty'})
+			return fail(400, { error: true, errMessage: 'Last Name field cannot be empty' });
 		}
 		if (!email) {
-			return fail(400, {error: true, errMessage: 'Email field cannot be empty'})
+			return fail(400, { error: true, errMessage: 'Email field cannot be empty' });
 		}
 		if (!username) {
-			return fail(400, {error: true, errMessage: 'Username field cannot be empty'})
+			return fail(400, { error: true, errMessage: 'Username field cannot be empty' });
 		}
 
 		const queryUpdate = await db.query(`
@@ -85,40 +104,40 @@ export const actions = {
             email        = $5,
             last_updated = now()
         where user_id = $6;
-		`, [roleId, firstName, lastName, username, email, userId])
+		`, [roleId, firstName, lastName, username, email, userId]);
 
 		if (queryUpdate.rowCount && queryUpdate.rowCount > 0) {
-			return { success: true, message: "Record successfully updated" }
+			return { success: true, message: 'Record successfully updated' };
 		}
 	},
-	deactivateUser: async({request}) => {
-		const data = await request.formData()
-		const userId: string = <string>data.get('userId')
+	deactivateUser: async ({ request }) => {
+		const data = await request.formData();
+		const userId: string = <string>data.get('userId');
 
 		const query = await db.query(`
         update users
-        set active = 'false',
+        set active       = 'false',
             last_updated = now()
         where user_id = $1;
-		`, [userId])
+		`, [userId]);
 
 		if (query.rowCount && query.rowCount > 0) {
-			return { success: true, message: "User account has been deactivated" }
+			return { success: true, message: 'User account has been deactivated' };
 		}
 	},
-	activateUser: async({request}) => {
-		const data = await request.formData()
-		const userId: string = <string>data.get('userId')
+	activateUser: async ({ request }) => {
+		const data = await request.formData();
+		const userId: string = <string>data.get('userId');
 
 		const query = await db.query(`
         update users
-        set active = 'true',
+        set active       = 'true',
             last_updated = now()
         where user_id = $1;
-		`, [userId])
+		`, [userId]);
 
 		if (query.rowCount && query.rowCount > 0) {
-			return { success: true, message: "User account has been activated successfully" }
+			return { success: true, message: 'User account has been activated successfully' };
 		}
 	}
-}
+};

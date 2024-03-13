@@ -1,13 +1,15 @@
 <script lang="ts">
 	import type { ModalSettings, PopupSettings } from '@skeletonlabs/skeleton';
 	import { popup, getModalStore } from '@skeletonlabs/skeleton';
-	import { invalidateAll } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import { enhance } from '$app/forms';
+	import { page } from '$app/stores'
 
 	export let data
 	export let form
 	let readOnly: boolean = true
 	let formElement: HTMLFormElement
+	let filter: string
 	const modelStore = getModalStore()
 
 	$: active_class = data?.userInfo['account_status'] === 'active' ? 'variant-ghost-success' : 'variant-ghost-error'
@@ -20,6 +22,13 @@
 		target: 'popupCombobox',
 		placement: 'right'
 	};
+
+	// --------------- Functions ----------------------------
+
+	function filterHandler() {
+		$page.url.searchParams.set('filter', filter)
+		goto($page.url.toString(), {invalidateAll: true})
+	}
 
 	// --------------- Modal Config -------------------------
 	const updateModal: ModalSettings = {
@@ -173,6 +182,18 @@
 		</form>
 		<hr>
 		<h3 class="h3">Bookings</h3>
+		<div class="grid grid-cols-4 gap-4">
+			<label class="label">
+				<span>Filter by Booking Status</span>
+				<select class="select" name="statusFilterSelect" bind:value={filter} on:change={filterHandler} >
+					<option value="none">All</option>
+					<option value="booked">Booked</option>
+					<option value="cancelled">Cancelled</option>
+					<option value="present">Present</option>
+					<option value="absent">Absent</option>
+				</select>
+			</label>
+		</div>
 		<!-- Responsive Container (recommended) -->
 			<div class="table-container">
 				<!-- Native Table Element -->
