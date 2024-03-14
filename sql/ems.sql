@@ -101,14 +101,9 @@ CREATE TABLE bookings
         FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 
-CREATE TABLE auth_user
-(
-    id TEXT PRIMARY KEY
-);
-
 CREATE TABLE user_session
 (
     id         TEXT PRIMARY KEY,
     expires_at TIMESTAMPTZ NOT NULL,
-    user_id    TEXT        NOT NULL REFERENCES auth_user (id)
+    user_id    INT         NOT NULL REFERENCES users (user_id)
 );
