@@ -7,8 +7,8 @@
 
 		{#if data.events }
 			{#each data.events as eachEvent }
-				<div class="card p-4 variant-filled">
-					<header class="card-header"><span class="font-bold text-xl">{eachEvent['event_name']}</span></header>
+				<div class="card p-4 bg-initial">
+					<header class="card-header"><span class="font-bold text-2xl">{eachEvent['event_name']}</span></header>
 					<section class="p-4 space-y-4">
 						<div class="h-4">
 							<p class="truncate ...">{eachEvent['description']}</p>
@@ -45,7 +45,7 @@
 						</dl>
 					</section>
 					<footer class="card-footer">
-						<a href="/event/{eachEvent['event_id']}" class="underline">See more ...</a>
+						<a href="/event/{eachEvent['event_id']}" class="anchor">See more ...</a>
 					</footer>
 				</div>
 			{/each}
