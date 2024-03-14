@@ -1,22 +1,17 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
-	import { popup, getModalStore } from '@skeletonlabs/skeleton';
-	import type { PopupSettings, ModalSettings } from '@skeletonlabs/skeleton';
+	import { popup, getModalStore, type Modal } from '@skeletonlabs/skeleton';
+	import type { PopupSettings, ModalSettings, ModalComponent } from '@skeletonlabs/skeleton';
+	import BookingCancellationModal from '$lib/BookingCancellationModal.svelte';
 
-	const modalStore = getModalStore()
-	export let data
-	export let form
-	let formElement: HTMLFormElement
-	let readOnly: boolean = true
-	let comboboxValue: string = 'actions'
-	let hideTextarea: boolean = true
-	$: activeClass = data.bookingInfo['status'] === 'cancelled' ? 'variant-ghost-error' : ''
-	// ---------- Functions ----------------------
-
-	function selectHandler(this: any) {
-		hideTextarea = this.value !== 'cancelled';
-	}
+	const modalStore = getModalStore();
+	export let data;
+	export let form;
+	let formElement: HTMLFormElement;
+	let readOnly: boolean = true;
+	let comboboxValue: string = 'actions';
+	$: activeClass = data.bookingInfo['status'] === 'cancelled' ? 'variant-ghost-error' : '';
 
 	// ---------- Modal Config -------------------
 	const amendBookingModal: ModalSettings = {
@@ -25,8 +20,25 @@
 		body: 'Are you sure you wish to amend this booking?',
 		response: r => {
 			if (r) {
-				formElement.action = "?/amendBooking"
-				formElement.requestSubmit()
+				formElement.action = '?/amendBooking';
+				formElement.requestSubmit();
+			}
+		}
+	};
+
+	const modalComponent: ModalComponent = { ref: BookingCancellationModal };
+
+	const cancelBookingModal: ModalSettings = {
+		type: 'component',
+		component: modalComponent,
+		// Data
+		title: 'Booking Cancellation',
+		body: 'Provide the reason for cancellation below',
+		response: (r: string) => {
+			if (r) {
+				data.bookingInfo['remark'] = r;
+				formElement.action = '?/cancelBooking';
+				formElement.requestSubmit();
 			}
 		}
 	};
@@ -40,9 +52,9 @@
 		buttonTextSubmit: 'Send',
 		response: r => {
 			if (r) {
-				data.bookingInfo['email'] = r
-				formElement.action = "?/sendEmail"
-				formElement.requestSubmit()
+				data.bookingInfo['email'] = r;
+				formElement.action = '?/sendEmail';
+				formElement.requestSubmit();
 			}
 		}
 	};
@@ -66,9 +78,17 @@
 
 		<div class="card p-4 w-48" data-popup="popupCombobox">
 			<div class="grid grid-cols-1 gap-2">
-				<button type="button" class="btn bg-transparent" on:click={() => {invalidateAll(); readOnly = true}}>Refresh</button>
-				<button type="button" class="btn bg-transparent" on:click={() => {modalStore.trigger(sendEmailModal)}}>Resend Email</button>
+				<button type="button" class="btn bg-transparent" on:click={() => {invalidateAll(); readOnly = true}}>Refresh
+				</button>
+				<button type="button" class="btn bg-transparent" on:click={() => {modalStore.trigger(sendEmailModal)}}>Resend
+					Email
+				</button>
 				<button type="button" class="btn bg-transparent" on:click={() => {readOnly = false}}>Amend Booking</button>
+				{#if data.bookingInfo['status'] !== 'cancelled' }
+					<button type="button" class="btn variant-ghost-error" on:click={() => {modalStore.trigger(cancelBookingModal)}}>
+						Cancel Booking
+					</button>
+				{/if}
 			</div>
 		</div>
 
@@ -81,35 +101,41 @@
 		<form class="grid grid-cols-2 gap-4" method="post" use:enhance={({formData, action}) => {
 			if (action.search === '?/sendEmail') {
 				formData.append('email', data.bookingInfo['email'])
+			} else if (action.search === '?/cancelBooking') {
+				formData.append('remark', data.bookingInfo['remark'])
 			}
 			return async ({update}) => {update()}
 		}} bind:this={formElement}>
-			<input class="input" readonly={true} type="text" value={data.bookingInfo['booking_id']} name="bookingId" hidden={true} />
+			<input class="input" readonly={true} type="text" value={data.bookingInfo['booking_id']} name="bookingId"
+						 hidden={true} />
 			<label class="label">
 				<span>Booking Reference No.</span>
-				<input class="input" readonly={true} type="text" bind:value={data.bookingInfo['booking_ref']} name="bookingRef" />
+				<input class="input" readonly={true} type="text" bind:value={data.bookingInfo['booking_ref']}
+							 name="bookingRef" />
 			</label>
 
 			<label class="label">
 				<span>Booking Date</span>
-				<input class="input" readonly={true} type="datetime-local" bind:value={data.bookingInfo['booking_datetime']} name="bookingDatetime"/>
+				<input class="input" readonly={true} type="datetime-local" bind:value={data.bookingInfo['booking_datetime']}
+							 name="bookingDatetime" />
 			</label>
 
 			<label class="label">
 				<span>Number of Seats</span>
-				<input class="input" readonly={readOnly} type="number" min="1" max="10" bind:value={data.bookingInfo['ticket_quantity']} name="seats" />
+				<input class="input" readonly={readOnly} type="number" min="1" max="10"
+							 bind:value={data.bookingInfo['ticket_quantity']} name="seats" />
 			</label>
 
 			<label class="label">
 				<span>Booking Status</span>
 				{#if readOnly}
-					<input class="input capitalize {activeClass}" readonly={true} type="text" bind:value={data.bookingInfo['status']}/>
+					<input class="input capitalize {activeClass}" readonly={true} type="text"
+								 bind:value={data.bookingInfo['status']} />
 				{:else}
-					<select class="select" name="status" on:change={selectHandler} value={data.bookingInfo['status']}>
+					<select class="select" name="status" value={data.bookingInfo['status']}>
 						<option value="booked">Booked</option>
 						<option value="present">Present</option>
 						<option value="absent">Absent</option>
-						<option value="cancelled">Cancelled</option>
 					</select>
 				{/if}
 			</label>
@@ -118,30 +144,31 @@
 				<div class="col-start-1">
 					<label class="label">
 						<span>Last Updated</span>
-						<input class="input variant-ghost" readonly={true} type="datetime-local" bind:value={data.bookingInfo['last_updated']} />
+						<input class="input variant-ghost" readonly={true} type="datetime-local"
+									 bind:value={data.bookingInfo['last_updated']} />
 					</label>
 				</div>
 			</div>
 
 			<div class="grid grid-cols-subgrid gap-4 col-span-2">
 				<div class="col-start-1">
-
-
-					<label class="label" hidden={data.bookingInfo['remark'] ? false: hideTextarea}>
+					<label class="label" hidden={!data.bookingInfo['remark']}>
 						<span>Reason for cancellation</span>
 						{#if data.bookingInfo['remark']}
-							<textarea class="textarea" rows="4" name="remark" readonly bind:value={data.bookingInfo['remark']}/>
-						{:else}
-							<textarea class="textarea" rows="4" placeholder="Reason for cancellation" name="remark" required={!hideTextarea}/>
+							<textarea class="textarea" rows="4" readonly bind:value={data.bookingInfo['remark']} />
 						{/if}
-						</label>
+					</label>
 				</div>
 			</div>
 
 			{#if (!readOnly)}
 				<div class="grid grid-cols-6 gap-4">
-					<button type="button" class="btn variant-filled-primary" on:click={() => {modalStore.trigger(amendBookingModal)}}>Save</button>
-					<button type="button" class="btn variant-filled" on:click={() => {readOnly = true; hideTextarea = true}}>Cancel</button>
+					<button type="button" class="btn variant-filled-primary"
+									on:click={() => {modalStore.trigger(amendBookingModal)}}>Save
+					</button>
+					<button type="button" class="btn variant-filled" on:click={() => {readOnly = true;}}>
+						Cancel
+					</button>
 				</div>
 			{/if}
 		</form>
@@ -162,12 +189,14 @@
 
 			<label class="label">
 				<span>Event Start Date</span>
-				<input class="input variant-ghost" readonly={true} type="datetime-local" bind:value={data.bookingInfo['start_datetime']} name="startDate"/>
+				<input class="input variant-ghost" readonly={true} type="datetime-local"
+							 bind:value={data.bookingInfo['start_datetime']} name="startDate" />
 			</label>
 
 			<label class="label">
 				<span>Event End Date</span>
-				<input class="input variant-ghost" readonly={true} type="datetime-local" bind:value={data.bookingInfo['end_datetime']} name="endDate"/>
+				<input class="input variant-ghost" readonly={true} type="datetime-local"
+							 bind:value={data.bookingInfo['end_datetime']} name="endDate" />
 			</label>
 
 		</div>

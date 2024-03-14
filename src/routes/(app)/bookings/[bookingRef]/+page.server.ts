@@ -37,7 +37,6 @@ export const actions = {
 		const bookingId: string = <string>data.get('bookingId');
 		const seats: string = <string>data.get('seats');
 		const status: string = <string>data.get('status');
-		const remark: string = <string>data.get('remark');
 
 		if (!status) {
 			return fail(400, { error: true, message: 'An Error Occurred, try again!' });
@@ -46,34 +45,39 @@ export const actions = {
 			return fail(400, { error: true, message: 'An Error Occurred, try again!' });
 		}
 
-		if (status === 'cancelled') {
-			const queryResult = await db.query(`
-          update bookings
-          set status       = 'cancelled',
-              remark       = $1,
-              last_updated = now()
-          where booking_id = $2;
-			`, [remark, bookingId]);
+		const queryResult = await db.query(`
+        update bookings
+        set ticket_quantity = $1,
+            status          = $2,
+            last_updated    = now()
+        where booking_id = $3;
+		`, [seats, status, bookingId]);
 
-			if (queryResult.rowCount && queryResult.rowCount > 0) {
-				return { success: true, message: 'Booking successfully cancelled' };
-			}
-		} else {
-			const queryResult = await db.query(`
-          update bookings
-          set ticket_quantity = $1,
-              status          = $2,
-              last_updated    = now()
-          where booking_id = $3;
-			`, [seats, status, bookingId]);
-
-			if (queryResult.rowCount && queryResult.rowCount > 0) {
-				return { success: true, message: 'Booking successfully updated' };
-			}
+		if (queryResult.rowCount && queryResult.rowCount > 0) {
+			return { success: true, message: 'Booking successfully updated' };
 		}
 	},
 	sendEmail: async ({ request }) => {
 		const data = await request.formData()
 		console.log('Booking Info Email Sent to :' + data.get('email'));
+	},
+	cancelBooking: async ({ request }) => {
+		const data = await request.formData()
+
+		const bookingId = <string> data.get('bookingId')
+		const remark = <string> data.get('remark')
+
+		const queryResult = await db.query(`
+        update bookings
+        set status       = 'cancelled',
+            remark       = $1,
+            last_updated = now()
+        where booking_id = $2;
+		`, [remark, bookingId]);
+
+		if (queryResult.rowCount && queryResult.rowCount > 0) {
+			return { success: true, message: 'Booking successfully cancelled' };
+		}
+
 	}
 };
