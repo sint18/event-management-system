@@ -92,7 +92,7 @@
 		<div class="card p-4" data-popup="popupCombobox">
 			<div class="grid grid-cols-1 gap-2">
 				<button type="button" class="btn bg-transparent" on:click={() => {invalidateAll(); readOnly = true}}>Refresh</button>
-				<a href="/bookings/create?user={data.userInfo['username']}" class="btn bg-transparent">Create Booking</a>
+				<a href="/admin/bookings/create?user={data.userInfo['username']}" class="btn bg-transparent">Create Booking</a>
 				<button type="button" class="btn bg-transparent" on:click={() => {readOnly = false}}>Edit Information</button>
 				{#if data.userInfo['account_status'] === 'active'}
 					<button class="btn variant-ghost-error" on:click={() => modelStore.trigger(deactModal)}>Deactivate User</button>
@@ -220,7 +220,7 @@
 								<td class="capitalize">{row['status']}</td>
 								<td>{row['last_updated']}</td>
 								<td>
-									<a href="/bookings/{row['booking_ref']}" class="btn btn-sm variant-filled-surface">View Details</a>
+									<a href="/admin/bookings/{row['booking_ref']}" class="btn btn-sm variant-filled-surface">View Details</a>
 								</td>
 							</tr>
 						{/each}
