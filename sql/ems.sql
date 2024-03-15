@@ -1,7 +1,7 @@
 -- Create the Events table
 CREATE TABLE event_category
 (
-    category_id   SERIAL PRIMARY KEY,
+    id            SERIAL PRIMARY KEY,
     category_name VARCHAR(255) NOT NULL,
     last_updated  TIMESTAMP    NOT NULL DEFAULT now()
 );
@@ -14,7 +14,7 @@ VALUES ('Careers and employability', now()),
 -- Create the Organizers table
 CREATE TABLE organizers
 (
-    organizer_id   SERIAL PRIMARY KEY,
+    id             SERIAL PRIMARY KEY,
     organizer_name VARCHAR(255) NOT NULL,
     last_updated   TIMESTAMP    NOT NULL DEFAULT now()
 );
@@ -22,7 +22,7 @@ CREATE TABLE organizers
 -- Create the Event Category table
 CREATE TABLE events
 (
-    event_id       SERIAL PRIMARY KEY,
+    id             SERIAL PRIMARY KEY,
     organizer_id   INT,
     category_id    INT          NOT NULL,
     event_name     VARCHAR(255) NOT NULL,
@@ -34,28 +34,28 @@ CREATE TABLE events
     last_updated   TIMESTAMP    NOT NULL DEFAULT now(),
     created_at     TIMESTAMP    NOT NULL DEFAULT now(),
     CONSTRAINT fk_organizer_id
-        FOREIGN KEY (organizer_id) REFERENCES organizers (organizer_id),
+        FOREIGN KEY (organizer_id) REFERENCES organizers (id),
     CONSTRAINT fk_category_id
-        FOREIGN KEY (category_id) REFERENCES event_category (category_id)
+        FOREIGN KEY (category_id) REFERENCES event_category (id)
 );
 
 -- Create the Media table
 CREATE TABLE media
 (
-    media_id     SERIAL PRIMARY KEY,
+    id           SERIAL PRIMARY KEY,
     event_id     INT          NOT NULL,
     filename     VARCHAR(255) NOT NULL,
     ext          VARCHAR(10)  NOT NULL,
     created_at   TIMESTAMP    NOT NULL DEFAULT now(),
     last_updated TIMESTAMP    NOT NULL DEFAULT now(),
     CONSTRAINT fk_event_id
-        FOREIGN KEY (event_id) REFERENCES events (event_id)
+        FOREIGN KEY (event_id) REFERENCES events (id)
 );
 
 -- Create the Roles table
 CREATE TABLE roles
 (
-    role_id      SERIAL PRIMARY KEY,
+    id           SERIAL PRIMARY KEY,
     role_name    VARCHAR(255) NOT NULL,
     last_updated TIMESTAMP    NOT NULL DEFAULT now()
 );
@@ -68,7 +68,7 @@ VALUES ('User', now()),
 -- Create the Users table
 CREATE TABLE users
 (
-    user_id      SERIAL PRIMARY KEY,
+    id           SERIAL PRIMARY KEY,
     role_id      INT                 NOT NULL,
     username     VARCHAR(255) UNIQUE NOT NULL,
     password     TEXT                NOT NULL,
@@ -79,31 +79,31 @@ CREATE TABLE users
     last_updated TIMESTAMP           NOT NULL DEFAULT now(),
     created_at   TIMESTAMP           NOT NULL DEFAULT now(),
     CONSTRAINT fk_role_id
-        FOREIGN KEY (role_id) REFERENCES roles (role_id)
+        FOREIGN KEY (role_id) REFERENCES roles (id)
 );
 
 -- Create the Bookings table
 CREATE TABLE bookings
 (
-    booking_id       SERIAL PRIMARY KEY,
+    id               SERIAL PRIMARY KEY,
     event_id         INT         NOT NULL,
     user_id          INT         NOT NULL,
     booking_datetime TIMESTAMP   NOT NULL DEFAULT now(),
     booking_ref      VARCHAR(20) NOT NULL DEFAULT TO_CHAR(NOW(), 'YYYYMMDD') ||
-                                                  LPAD(NEXTVAL('bookings_booking_id_seq')::TEXT, 4, '0') UNIQUE,
+                                                  LPAD(NEXTVAL('bookings_id_seq')::TEXT, 4, '0') UNIQUE,
     ticket_quantity  INT         NOT NULL DEFAULT 1,
     status           VARCHAR(20) NOT NULL,
     remark           TEXT,
     last_updated     TIMESTAMP   NOT NULL DEFAULT now(),
     CONSTRAINT fk_event_id
-        FOREIGN KEY (event_id) REFERENCES events (event_id),
+        FOREIGN KEY (event_id) REFERENCES events (id),
     CONSTRAINT fk_user_id
-        FOREIGN KEY (user_id) REFERENCES users (user_id)
+        FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
 CREATE TABLE user_session
 (
     id         TEXT PRIMARY KEY,
     expires_at TIMESTAMPTZ NOT NULL,
-    user_id    INT         NOT NULL REFERENCES users (user_id)
+    user_id    INT         NOT NULL REFERENCES users (id)
 );
