@@ -4,9 +4,9 @@ import { verify } from '$lib/server/crypto'
 import { lucia } from '$lib/server/auth';
 
 export async function load({ locals }) {
-	// if (locals.user) {
-	// 	return redirect(302, '/admin');
-	// }
+	if (locals.user) {
+		return redirect(302, '/admin');
+	}
 }
 
 export const actions = {
