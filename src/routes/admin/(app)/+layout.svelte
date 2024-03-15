@@ -1,6 +1,25 @@
 <script lang="ts">
-	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar, type ModalSettings, getModalStore } from '@skeletonlabs/skeleton';
 	import { page } from '$app/stores';
+
+	export let data
+	let formElement: HTMLFormElement
+
+	const modalStore = getModalStore();
+
+	const logoutModal: ModalSettings = {
+		type: 'confirm',
+		// Data
+		title: 'Log Out',
+		body: 'Do you want to Log Out of your account?',
+		buttonTextConfirm: 'Log Out',
+		// TRUE if confirm pressed, FALSE if cancel pressed
+		response: (response: boolean) => {
+			if(response) {
+				formElement.requestSubmit()
+			}
+		},
+	};
 
 	$: activeClass = (href: string) => {
 		if (href === $page.url.pathname) {
@@ -21,8 +40,12 @@
 				<strong class="text-xl uppercase">Event Management System</strong>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
-				<span>Admin</span>
-				<button type="button" class="btn variant-filled-surface">Log Out</button>
+				{#if data.userId }
+					<span>Logged In: <strong><a href="/admin/users/{data.userId}" class="anchor">{data.username}</a></strong></span>
+					<form action="/admin/logout" method="post" bind:this={formElement}>
+						<button type="button" on:click={() => {modalStore.trigger(logoutModal)}} class="btn variant-filled-surface">Log Out</button>
+					</form>
+				{/if}
 			</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>
