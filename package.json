@@ -12,6 +12,7 @@
     "format": "prettier --write ."
   },
   "devDependencies": {
+    "@iconify-json/mdi": "^1.1.64",
     "@skeletonlabs/skeleton": "2.8.0",
     "@skeletonlabs/tw-plugin": "0.3.1",
     "@sveltejs/adapter-auto": "^3.0.0",
@@ -37,6 +38,7 @@
     "tailwindcss": "3.4.1",
     "tslib": "^2.4.1",
     "typescript": "^5.0.0",
+    "unplugin-icons": "^0.18.5",
     "vite": "^5.0.3",
     "vite-plugin-tailwind-purgecss": "0.2.0"
   },
