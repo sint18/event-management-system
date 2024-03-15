@@ -17,7 +17,7 @@
 	</svelte:fragment>
 	<!-- Page Route Content -->
 	<slot />
-	<svelte:fragment slot="pageFooter">
+	<svelte:fragment slot="footer">
 		<div class="container mx-auto">
 			<nav class="flex justify-center space-x-5">
 				<a href="/" class="btn variant-filled">Home</a>
@@ -26,5 +26,4 @@
 			</nav>
 		</div>
 	</svelte:fragment>
-	<svelte:fragment slot="footer">Footer</svelte:fragment>
 </AppShell>
