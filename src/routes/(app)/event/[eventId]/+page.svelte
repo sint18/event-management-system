@@ -1,5 +1,31 @@
 <script lang="ts">
+	import { getModalStore } from '@skeletonlabs/skeleton';
+	import { enhance } from '$app/forms';
+	import type { ModalSettings } from '@skeletonlabs/skeleton';
+
+	const modalStore = getModalStore();
+
 	export let data
+	export let form
+	let username: string
+	let formElement: HTMLFormElement
+
+	// ------------------------------- Modal Config --------------------------------------
+
+	const bookModal: ModalSettings = {
+		type: 'prompt',
+		title: 'Event Booking',
+		body: 'Please enter your username and confirm booking.',
+		valueAttr: { type: 'text', required: true, placeholder: 'Enter Username . . .' },
+		buttonTextSubmit: 'Confirm',
+		response: r => {
+			if (r) {
+				username = r;
+				formElement.requestSubmit();
+			}
+		}
+	};
+
 </script>
 <div class="p-5 space-y-5 container mx-auto h-full justify-center">
 	{#if data.eventInfo }
@@ -41,10 +67,14 @@
 				</tbody>
 			</table>
 		</div>
-
-		<form method="post">
+		{#if form?.success }
+			<p class="alert variant-ghost-success">{form?.message}</p>
+		{/if}
+		<form method="post" use:enhance={({formData}) => {
+			formData.append('username', username)
+		}} bind:this={formElement}>
 			<input name="eventId" value="{data.eventInfo['event_id']}" hidden>
-			<button class="btn variant-filled-primary" disabled={!(data.eventInfo['status'] === 'upcoming')}>Book Event</button>
+			<button type="button" on:click={() => {modalStore.trigger(bookModal)}} class="btn variant-filled-primary" disabled={!(data.eventInfo['status'] === 'upcoming')}>Book Event</button>
 		</form>
 
 	{/if}

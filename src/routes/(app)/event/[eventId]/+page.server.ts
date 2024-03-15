@@ -22,3 +22,21 @@ export async function load({params}){
 	}
 
 }
+
+export const actions = {
+	default: async ({ request }) => {
+		const data = await request.formData()
+		const eventId = <string> data.get('eventId')
+		const username = <string> data.get('username')
+		const queryResult = await db.query(`
+             insert into bookings (event_id, user_id, status) values ($1, (
+                 select user_id from users where username = $2
+								 ), 'booked')
+		`, [eventId, username]
+		)
+
+		if (queryResult.rowCount && queryResult.rowCount > 0) {
+			return { success: true, message: 'Booking successful!\nA confirmation email has been sent.'}
+		}
+	}
+}
