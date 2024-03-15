@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
-	import { popup, getModalStore, type Modal } from '@skeletonlabs/skeleton';
+	import { popup, getModalStore } from '@skeletonlabs/skeleton';
 	import type { PopupSettings, ModalSettings, ModalComponent } from '@skeletonlabs/skeleton';
 	import BookingCancellationModal from '$lib/BookingCancellationModal.svelte';
 

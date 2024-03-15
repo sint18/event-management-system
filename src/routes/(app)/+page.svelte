@@ -3,7 +3,7 @@
 </script>
 <div class="p-5 space-y-5 container mx-auto h-full justify-center">
 	<h1 class="h1">All Events</h1>
-	<div class="grid lg:grid-cols-4 md:grid-cols-2 gap-4">
+	<div class="grid grid-cols-1 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 gap-4">
 
 		{#if data.events }
 			{#each data.events as eachEvent }
