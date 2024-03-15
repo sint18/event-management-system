@@ -1,7 +1,7 @@
 import * as db from '$lib/server/db'
 export async function load() {
 	const result = await db.query(`
-	select event_id as "Event ID",
+	select id as "Event ID",
 	       event_name as "Event Name",
 	       description as "Description",
 	       to_char(start_datetime, 'DD/MM/YYYY HH24:MI:SS') as "Start Date",

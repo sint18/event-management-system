@@ -4,7 +4,7 @@ export async function load({params}){
 	const eventId: string = params.eventId
 
 	const result = await db.query(`
-              select event_id,
+              select id                                               as event_id,
                      event_name,
                      description,
                      to_char(start_datetime, 'YYYY-MM-DD HH24:MI:SS') as start_datetime,
@@ -13,7 +13,7 @@ export async function load({params}){
                      location,
                      status
               from events
-              where event_id = $1
+              where id = $1
 		`, [eventId]
 	)
 
@@ -30,7 +30,7 @@ export const actions = {
 		const username = <string> data.get('username')
 		const queryResult = await db.query(`
              insert into bookings (event_id, user_id, status) values ($1, (
-                 select user_id from users where username = $2
+                 select id from users where username = $2
 								 ), 'booked')
 		`, [eventId, username]
 		)

@@ -5,7 +5,7 @@ export async function load({ params }) {
 	const bookingRef: string = params.bookingRef;
 
 	const queryResult = await db.query(`
-      select bookings.booking_id,
+      select bookings.id as booking_id,
              bookings.booking_ref,
              to_char(bookings.booking_datetime, 'YYYY-MM-DD HH24:MI:SS') as booking_datetime,
              bookings.ticket_quantity,
@@ -20,8 +20,8 @@ export async function load({ params }) {
              u.email,
              concat(u.first_name, ' ', u.last_name)                      as fullname
       from bookings
-               join public.events e on e.event_id = bookings.event_id
-               join public.users u on u.user_id = bookings.user_id
+               join public.events e on e.id = bookings.event_id
+               join public.users u on u.id = bookings.user_id
       where bookings.booking_ref = $1;
 	`, [bookingRef]);
 
@@ -50,7 +50,7 @@ export const actions = {
         set ticket_quantity = $1,
             status          = $2,
             last_updated    = now()
-        where booking_id = $3;
+        where id = $3;
 		`, [seats, status, bookingId]);
 
 		if (queryResult.rowCount && queryResult.rowCount > 0) {
@@ -72,7 +72,7 @@ export const actions = {
         set status       = 'cancelled',
             remark       = $1,
             last_updated = now()
-        where booking_id = $2;
+        where id = $2;
 		`, [remark, bookingId]);
 
 		if (queryResult.rowCount && queryResult.rowCount > 0) {

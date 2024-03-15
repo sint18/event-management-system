@@ -3,7 +3,7 @@ import { fail } from '@sveltejs/kit';
 
 export async function load() {
 	const queryResult = await db.query(`
-      select event_id, event_name
+      select id as event_id, event_name
       from events
       where status = 'upcoming'
 	`, []);
@@ -23,7 +23,7 @@ export const actions = {
 		}
 
 		const queryResult = await db.query(`
-        select username, user_id, first_name, last_name
+        select username, id, first_name, last_name
         from users
         where username = $1;
 		`, [username]);

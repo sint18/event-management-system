@@ -11,7 +11,7 @@ export async function load({ url, params }) {
 	}
 
 	const queryUserInfo = await db.query(`
-      select users.user_id,
+      select users.id                                             as user_id,
              users.username,
              users.first_name,
              users.last_name,
@@ -26,44 +26,45 @@ export async function load({ url, params }) {
              to_char(users.last_updated, 'YYYY-MM-DD HH24:MI:SS') as last_updated,
              to_char(users.created_at, 'YYYY-MM-DD HH24:MI:SS')   as created_at
       from users
-               inner join roles r on r.role_id = users.role_id
-      where users.user_id = $1;
+               inner join roles r on r.id = users.role_id
+      where users.id = $1;
 	`, [userId]);
 
 	const queryRoles = await db.query(`
-      select role_id, role_name
+      select id as roles_id, role_name
       from roles;
 	`, []);
 
 	let queryBookings: QueryResult
 	if (!bookingFilter || bookingFilter === 'none') {
 		queryBookings = await db.query(`
-      select booking_id,
+      select bookings.id as booking_id,
              booking_ref,
              e.event_name,
-             e.event_id,
+             e.id as event_id,
              to_char(booking_datetime, 'DD/MM/YYYY HH24:MI:SS')      as booking_datetime,
              ticket_quantity,
              bookings.status,
              to_char(bookings.last_updated, 'DD/MM/YYYY HH24:MI:SS') as last_updated
       from bookings
-               inner join events e on bookings.event_id = e.event_id
+               inner join events e on bookings.event_id = e.id
       where user_id = $1;
 	`, [userId]);
 	} else {
 		queryBookings = await db.query(`
-      select booking_id,
-             booking_ref,
-             e.event_name,
-             e.event_id,
-             to_char(booking_datetime, 'DD/MM/YYYY HH24:MI:SS')      as booking_datetime,
-             ticket_quantity,
-             bookings.status,
-             to_char(bookings.last_updated, 'DD/MM/YYYY HH24:MI:SS') as last_updated
-      from bookings
-               inner join events e on bookings.event_id = e.event_id
-      where user_id = $1 and bookings.status = $2;
-	`, [userId, bookingFilter]);
+        select bookings.id                                             as booking_id,
+               booking_ref,
+               e.event_name,
+               e.id                                                    as event_id,
+               to_char(booking_datetime, 'DD/MM/YYYY HH24:MI:SS')      as booking_datetime,
+               ticket_quantity,
+               bookings.status,
+               to_char(bookings.last_updated, 'DD/MM/YYYY HH24:MI:SS') as last_updated
+        from bookings
+                 inner join events e on bookings.event_id = e.id
+        where user_id = $1
+          and bookings.status = $2;
+		`, [userId, bookingFilter]);
 	}
 
 	if (queryUserInfo.rowCount && queryRoles.rowCount && queryUserInfo.rowCount > 0 && queryRoles.rowCount > 0) {
@@ -103,7 +104,7 @@ export const actions = {
             username     = $4,
             email        = $5,
             last_updated = now()
-        where user_id = $6;
+        where id = $6;
 		`, [roleId, firstName, lastName, username, email, userId]);
 
 		if (queryUpdate.rowCount && queryUpdate.rowCount > 0) {
@@ -118,7 +119,7 @@ export const actions = {
         update users
         set active       = 'false',
             last_updated = now()
-        where user_id = $1;
+        where id = $1;
 		`, [userId]);
 
 		if (query.rowCount && query.rowCount > 0) {
@@ -133,7 +134,7 @@ export const actions = {
         update users
         set active       = 'true',
             last_updated = now()
-        where user_id = $1;
+        where id = $1;
 		`, [userId]);
 
 		if (query.rowCount && query.rowCount > 0) {

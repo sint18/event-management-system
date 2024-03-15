@@ -1,8 +1,14 @@
 import { fail, redirect } from '@sveltejs/kit';
 import * as db from '$lib/server/db'
 import { verify } from '$lib/server/crypto'
+import { lucia } from '$lib/server/auth';
 
-// TODO: Create Session
+export async function load({ locals }) {
+	// if (locals.user) {
+	// 	return redirect(302, '/admin');
+	// }
+}
+
 export const actions = {
 	default: async ({ request, cookies }) => {
 		const data = await request.formData()
@@ -17,9 +23,9 @@ export const actions = {
 		}
 
 		const queryResult = await db.query(`
-        select user_id, password
+        select users.id, password
         from users
-                 join roles r on r.role_id = users.role_id
+                 join roles r on r.id = users.role_id
         where active is true
           and r.role_name ilike 'admin'
           and username = $1;
@@ -30,10 +36,17 @@ export const actions = {
 			const passwordHash = queryResult.rows[0]['password']
 			const result = await verify(password, passwordHash)
 			if (result) {
-				// cookies.set('user', queryResult.rows[0]['user_id'], { path: '' })
-				const user_id = queryResult.rows[0]['user_id']
+				const userId = queryResult.rows[0]['id']
 
-				return redirect(300, '/')
+				// -------------- Auth ------------------
+				const session = await lucia.createSession(userId, {});
+				const sessionCookie = lucia.createSessionCookie(session.id);
+				cookies.set(sessionCookie.name, sessionCookie.value, {
+					path: ".",
+					...sessionCookie.attributes
+				});
+				// --------------------------------
+				return redirect(300, '/admin/')
 			}
 		}
 		return fail(400, { error: true, message: 'Incorrect password or username'})

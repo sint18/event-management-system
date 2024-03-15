@@ -11,7 +11,7 @@ export const actions = {
 		}
 
 		const queryResult = await db.query(`
-        select bookings.booking_id,
+        select bookings.id as booking_id,
                bookings.booking_ref,
                to_char(bookings.booking_datetime, 'DD/MM/YYYY HH24:MI:SS') as booking_datetime,
                bookings.ticket_quantity,

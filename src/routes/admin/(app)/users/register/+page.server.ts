@@ -4,7 +4,7 @@ import { fail } from '@sveltejs/kit';
 
 export async function load(){
 	const queryResult = await db.query(`
-      select role_id, role_name
+      select id as role_id, role_name
       from roles;
 	`, [])
 

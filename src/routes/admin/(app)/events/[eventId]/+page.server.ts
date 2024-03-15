@@ -4,18 +4,19 @@ export async function load({params}){
 	const eventId: string = params.eventId
 
 	const result = await db.query(`
-	select event_id, 
-	       event_name,
-	       description,
-         to_char(start_datetime, 'YYYY-MM-DD HH24:MI:SS') as start_datetime,
-         to_char(end_datetime, 'YYYY-MM-DD HH24:MI:SS') as end_datetime,
-         (end_datetime - start_datetime)::text as duration,
-         location,
-         status,
-         to_char(last_updated, 'YYYY-MM-DD HH24:MI:SS') as last_updated,
-         to_char(created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at
-			from events where event_id = $1
-       `, [eventId]
+      select id                                               as event_id,
+             event_name,
+             description,
+             to_char(start_datetime, 'YYYY-MM-DD HH24:MI:SS') as start_datetime,
+             to_char(end_datetime, 'YYYY-MM-DD HH24:MI:SS')   as end_datetime,
+             (end_datetime - start_datetime)::text            as duration,
+             location,
+             status,
+             to_char(last_updated, 'YYYY-MM-DD HH24:MI:SS')   as last_updated,
+             to_char(created_at, 'YYYY-MM-DD HH24:MI:SS')     as created_at
+      from events
+      where id = $1
+		`, [eventId]
 	)
 
 	if (result.rowCount != 0) {
@@ -55,7 +56,7 @@ export const actions = {
             location       = $5,
             status         = $6,
             last_updated   = now()
-        where event_id = $7;
+        where id = $7;
 		`, [event_name, description, startDate, endDate, location, status, eventId])
 
 		if (result.rowCount && result.rowCount > 0) {
@@ -69,7 +70,7 @@ export const actions = {
 		const id: string = <string>data.get('eventId')
 
 		const queryResult = await db.query(`
-		delete from events where event_id = $1
+		delete from events where id = $1
 		`, [id])
 
 		if (queryResult.rowCount && queryResult.rowCount > 0){

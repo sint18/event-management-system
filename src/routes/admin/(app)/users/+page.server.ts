@@ -3,14 +3,14 @@ import { fail } from '@sveltejs/kit';
 
 export async function load(){
 	const queryResult = await db.query(`
-		select users.user_id    as "User ID",
-               users.username   as "Username",
-               users.first_name as "First Name",
-               users.last_name  as "Last Name",
-               users.email      as "Email",
-               users.points     as "Points"
-		from users
-		where user_id = 1;
+      select users.id         as "User ID",
+             users.username   as "Username",
+             users.first_name as "First Name",
+             users.last_name  as "Last Name",
+             users.email      as "Email",
+             users.points     as "Points"
+      from users
+      where id = 1;
 	`, [])
 
 	if (queryResult.rowCount && queryResult.rowCount > 0) {
@@ -34,26 +34,27 @@ export const actions = {
 		let result
 		if (username) {
 			result = await db.query(`
-        select users.user_id,
-               users.username,
-               users.first_name,
-               users.last_name,
-               users.email,
-               users.points
-        from users
-        where username = $1;
-		`, [username])
+          select users.id as user_id,
+                 users.username,
+                 users.first_name,
+                 users.last_name,
+                 users.email,
+                 users.points
+          from users
+          where username = $1;
+			`, [username])
 		} else if (firstName && lastName) {
 			result = await db.query(`
-        select users.user_id,
-               users.username,
-               users.first_name,
-               users.last_name,
-               users.email,
-               users.points
-        from users
-        where first_name ilike $1 and last_name ilike $2;
-		`, [firstName, lastName])
+          select users.id as user_id,
+                 users.username,
+                 users.first_name,
+                 users.last_name,
+                 users.email,
+                 users.points
+          from users
+          where first_name ilike $1
+            and last_name ilike $2;
+			`, [firstName, lastName])
 		}
 
 		if (result && result.rowCount && result.rowCount > 0) {
