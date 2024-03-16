@@ -4,18 +4,14 @@
 	export let form
 
 </script>
-<div class="card">
+<div class="card p-10">
 	<header class="card-header text-center space-y-4">
 		<h2 class="h2">Event Management System</h2>
-		<h4 class="h4">Admin Login</h4>
 	</header>
 	<section class="p-4">
 		<form class="space-y-4" method="post" use:enhance>
 			{#if form?.error}
 				<p class="alert variant-ghost-error">{form.message}</p>
-			{/if}
-			{#if form?.success}
-				<p class="alert variant-ghost-success">{form.message}</p>
 			{/if}
 			<label class="label">
 				<span>Username</span>
