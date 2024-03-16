@@ -13,7 +13,7 @@
 	const modelStore = getModalStore()
 
 	$: active_class = data?.userInfo['account_status'] === 'active' ? 'variant-ghost-success' : 'variant-ghost-error'
-
+	$: isCurrentUser = data?.userId === data?.userInfo['user_id']
 	// ---------------- Dropdown Config ----------------------
 	let comboboxValue: string = 'actions'
 
@@ -76,6 +76,21 @@
 		},
 	};
 
+	const logoutSessionModal: ModalSettings = {
+		type: 'confirm',
+		// Data
+		title: 'Log out of other sessions',
+		body: 'You will be logged out on other devices, do you wish to continue?',
+		buttonTextConfirm: 'Log Out',
+		// TRUE if confirm pressed, FALSE if cancel pressed
+		response: (response: boolean) => {
+			if(response) {
+				formElement.action = "?/logoutOtherSessions"
+				formElement.requestSubmit()
+			}
+		},
+	};
+
 </script>
 <!-- #TODO: view, edit and delete bookings of each user -->
 <div class="p-10 space-y-5 container h-full justify-center">
@@ -94,10 +109,16 @@
 				<button type="button" class="btn bg-transparent" on:click={() => {invalidateAll(); readOnly = true}}>Refresh</button>
 				<a href="/admin/bookings/create?user={data.userInfo['username']}" class="btn bg-transparent">Create Booking</a>
 				<button type="button" class="btn bg-transparent" on:click={() => {readOnly = false}}>Edit Information</button>
-				{#if data.userInfo['account_status'] === 'active'}
-					<button class="btn variant-ghost-error" on:click={() => modelStore.trigger(deactModal)}>Deactivate User</button>
+				{#if isCurrentUser}
+					{#if data.sessionCount && data.sessionCount.length > 1}
+						<button class="btn variant-ghost-error" on:click={() => modelStore.trigger(logoutSessionModal)}>Log out of other sessions</button>
+					{/if}
 				{:else}
-					<button class="btn variant-ghost-success" on:click={() => modelStore.trigger(activateModal)}>Activate User</button>
+					{#if data.userInfo['account_status'] === 'active'}
+						<button class="btn variant-ghost-error" on:click={() => modelStore.trigger(deactModal)}>Deactivate User</button>
+					{:else}
+						<button class="btn variant-ghost-success" on:click={() => modelStore.trigger(activateModal)}>Activate User</button>
+					{/if}
 				{/if}
 <!--				<button class="btn variant-ghost-error">Delete User</button>-->
 			</div>

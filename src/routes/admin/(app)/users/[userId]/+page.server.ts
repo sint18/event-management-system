@@ -1,8 +1,9 @@
 import * as db from '$lib/server/db';
-import { error, fail } from '@sveltejs/kit';
+import { error, fail, redirect } from '@sveltejs/kit';
 import type { QueryResult } from 'pg';
+import { lucia } from '$lib/server/auth';
 
-export async function load({ url, params }) {
+export async function load({ url, params, locals }) {
 	const userId = params.userId;
 	const bookingFilter = url.searchParams.get('filter');
 
@@ -35,21 +36,27 @@ export async function load({ url, params }) {
       from roles;
 	`, []);
 
-	let queryBookings: QueryResult
+	let sessionCount = null
+
+	if (locals.user && locals.user.id === Number(userId)) {
+		sessionCount = await lucia.getUserSessions(Number(userId));
+	}
+
+	let queryBookings: QueryResult;
 	if (!bookingFilter || bookingFilter === 'none') {
 		queryBookings = await db.query(`
-      select bookings.id as booking_id,
-             booking_ref,
-             e.event_name,
-             e.id as event_id,
-             to_char(booking_datetime, 'DD/MM/YYYY HH24:MI:SS')      as booking_datetime,
-             ticket_quantity,
-             bookings.status,
-             to_char(bookings.last_updated, 'DD/MM/YYYY HH24:MI:SS') as last_updated
-      from bookings
-               inner join events e on bookings.event_id = e.id
-      where user_id = $1;
-	`, [userId]);
+        select bookings.id                                             as booking_id,
+               booking_ref,
+               e.event_name,
+               e.id                                                    as event_id,
+               to_char(booking_datetime, 'DD/MM/YYYY HH24:MI:SS')      as booking_datetime,
+               ticket_quantity,
+               bookings.status,
+               to_char(bookings.last_updated, 'DD/MM/YYYY HH24:MI:SS') as last_updated
+        from bookings
+                 inner join events e on bookings.event_id = e.id
+        where user_id = $1;
+		`, [userId]);
 	} else {
 		queryBookings = await db.query(`
         select bookings.id                                             as booking_id,
@@ -68,7 +75,7 @@ export async function load({ url, params }) {
 	}
 
 	if (queryUserInfo.rowCount && queryRoles.rowCount && queryUserInfo.rowCount > 0 && queryRoles.rowCount > 0) {
-		return { userInfo: queryUserInfo.rows[0], roles: queryRoles.rows, bookings: queryBookings.rows };
+		return { userInfo: queryUserInfo.rows[0], roles: queryRoles.rows, bookings: queryBookings.rows, sessionCount: sessionCount };
 	}
 }
 
@@ -140,5 +147,12 @@ export const actions = {
 		if (query.rowCount && query.rowCount > 0) {
 			return { success: true, message: 'User account has been activated successfully' };
 		}
+	},
+	logoutOtherSessions: async ({ locals }) => {
+		if (!locals.user) {
+			return redirect(304, '/admin/login');
+		}
+		const userId = locals.user.id
+		await lucia.invalidateUserSessions(Number(userId));
 	}
 };
