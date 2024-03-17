@@ -13,14 +13,16 @@
 	// ------------------------------- Modal Config --------------------------------------
 
 	const bookModal: ModalSettings = {
-		type: 'prompt',
+		type: data.userId ? 'confirm' : 'prompt',
 		title: 'Event Booking',
-		body: 'Please enter your username and confirm booking.',
-		valueAttr: { type: 'text', required: true, placeholder: 'Enter Username . . .' },
+		body: data.userId ? 'Do you wish to book this event?' : 'Please enter your username and confirm booking.',
+		valueAttr: data.userId ? undefined : { type: 'text', required: true, placeholder: 'Enter Username . . .' },
 		buttonTextSubmit: 'Confirm',
 		response: r => {
 			if (r) {
-				username = r;
+				if (!data.userId) {
+					username = r;
+				}
 				formElement.requestSubmit();
 			}
 		}
@@ -71,7 +73,9 @@
 			<p class="alert variant-ghost-success">{form?.message}</p>
 		{/if}
 		<form method="post" use:enhance={({formData}) => {
-			formData.append('username', username)
+			if (!data.userId) {
+				formData.append('username', username)
+			}
 		}} bind:this={formElement}>
 			<input name="eventId" value="{data.eventInfo['event_id']}" hidden>
 			<button type="button" on:click={() => {modalStore.trigger(bookModal)}} class="btn variant-filled-primary" disabled={!(data.eventInfo['status'] === 'upcoming')}>Book Event</button>
