@@ -26,7 +26,7 @@
 	<svelte:fragment slot="footer">
 		<div class="container mx-auto p-4">
 			<nav class="flex justify-center space-x-5">
-				<a href="/" class="btn btn-lg {activeClass('/')}">
+				<a href="/static" class="btn btn-lg {activeClass('/')}">
 					<span><HomeIcon class="text-xl"></HomeIcon></span>
 					<span class="hidden md:block">Home</span>
 				</a>
