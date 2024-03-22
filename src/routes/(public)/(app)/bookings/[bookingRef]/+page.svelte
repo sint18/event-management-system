@@ -3,6 +3,7 @@
 	import { getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
 
 	export let data
+	export let form
 	let formElement: HTMLFormElement
 	const modal = getModalStore()
 
@@ -24,6 +25,12 @@
 			<h3 class="h3">Booking Details</h3>
 		</div>
 		<div>
+			{#if form?.success}
+				<p class="alert variant-ghost-success">{form.message}</p>
+			{/if}
+			{#if form?.error}
+				<p class="alert variant-ghost-error">{form.message}</p>
+			{/if}
 			<dl class="divide-y divide-slate-700">
 				<div class="grid grid-cols-2 gap-4 py-6">
 					<dt class="leading-6">Booking Ref</dt>

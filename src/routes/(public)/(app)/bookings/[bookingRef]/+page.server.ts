@@ -1,10 +1,10 @@
 import * as db from '$lib/server/db';
-import { error } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
 
 export async function load({ params }) {
 	const bookingRef: string = params.bookingRef;
 
-	if(isNaN(Number(bookingRef))) return error(404, 'Ref not found')
+	if (isNaN(Number(bookingRef))) return error(404, 'Ref not found');
 
 	const queryResult = await db.query(`
       select bookings.id,
@@ -33,23 +33,30 @@ export async function load({ params }) {
 
 export const actions = {
 	default: async ({ request }) => {
-		const data = await request.formData()
-		const bookingId = <string>data.get('bookingId')
+		const data = await request.formData();
+		const bookingId = <string>data.get('bookingId');
 
 		if (!bookingId) {
-			error(404, { message: 'Something went wrong' })
+			error(404, { message: 'Something went wrong' });
 		}
 		// TODO: Check event start date and current time to know if it's before 24 hours or not
 		const query = await db.query(`
         update bookings
-        set status       = 'cancelled',
+        set status = 'cancelled',
             last_updated = now(),
-            remark       = 'Cancelled by user before 24 hours of event start date'
-        where id = $1;
-		`,[bookingId])
+            remark = 'Cancelled by user before 24 hours of event start date'
+        from events e
+                 join bookings b on e.id = b.event_id
+        where b.id = $1
+          and not e.start_datetime < now() + interval '24 hours';
+		`, [bookingId]);
 
 		if (query.rowCount && query.rowCount > 0) {
-			return { success: true, message: 'Booking Successfully Cancelled'}
+			return { success: true, message: 'Booking Successfully Cancelled' };
 		}
+		return fail(400, {
+			error: true,
+			message: 'This booking cannot be cancelled as it is within 24 hours before the event start date.'
+		});
 	}
-}
+};
