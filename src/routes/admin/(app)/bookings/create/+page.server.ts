@@ -30,7 +30,7 @@ export const actions = {
 
 		if (queryResult.rowCount && queryResult.rowCount > 0) {
 			const infoString: string = `${queryResult.rows[0]['username']} - ${queryResult.rows[0]['first_name']} ${queryResult.rows[0]['last_name']}`;
-			return { userInfo: infoString, userId: queryResult.rows[0]['user_id'] };
+			return { userInfo: infoString, userId: queryResult.rows[0]['id'] };
 		} else {
 			return fail(400, { error: true, errMsg: 'User does not exist' });
 		}
