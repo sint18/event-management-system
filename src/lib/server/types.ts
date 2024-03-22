@@ -7,3 +7,9 @@ export interface BookingInfo {
 	location: string,
 	event_datetime: string
 }
+
+export interface PasswordForm {
+	currentPassword: string,
+	newPassword: string,
+	confirmNewPassword: string
+}
