@@ -90,7 +90,7 @@ CREATE TABLE bookings
     user_id          INT         NOT NULL,
     booking_datetime TIMESTAMP   NOT NULL DEFAULT now(),
     booking_ref      VARCHAR(20) NOT NULL DEFAULT TO_CHAR(NOW(), 'YYYYMMDD') ||
-                                                  LPAD(NEXTVAL('bookings_id_seq')::TEXT, 4, '0') UNIQUE,
+                                                  LPAD('bookings_id_seq'::TEXT, 4, '0') UNIQUE,
     ticket_quantity  INT         NOT NULL DEFAULT 1,
     status           VARCHAR(20) NOT NULL,
     remark           TEXT,
