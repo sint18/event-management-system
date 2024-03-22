@@ -6,6 +6,7 @@ export async function load() {
              description,
              to_char(start_datetime, 'DD/MM/YYYY HH24:MI:SS') as start_datetime,
              to_char(end_datetime, 'DD/MM/YYYY HH24:MI:SS')   as end_datetime,
+             (end_datetime - start_datetime)::text            as duration,
              location,
              upper(status)
       from events
