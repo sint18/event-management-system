@@ -13,3 +13,12 @@ export interface PasswordForm {
 	newPassword: string,
 	confirmNewPassword: string
 }
+
+export interface UserAccount {
+	username: string,
+	password: string
+	email: string,
+	firstName: string,
+	lastName: string,
+	role: string
+}
