@@ -3,7 +3,6 @@ export async function load() {
 	const result = await db.query(`
 	select id as "Event ID",
 	       event_name as "Event Name",
-	       description as "Description",
 	       to_char(start_datetime, 'DD/MM/YYYY HH24:MI:SS') as "Start Date",
          to_char(end_datetime, 'DD/MM/YYYY HH24:MI:SS') as "End Date",
 	       location as "Location",
