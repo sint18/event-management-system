@@ -47,6 +47,7 @@
     "@floating-ui/dom": "1.6.1",
     "@lucia-auth/adapter-postgresql": "^3.1.1",
     "@sveltejs/adapter-static": "^3.0.1",
+    "chart.js": "^4.4.2",
     "csv-parse": "^5.5.5",
     "lucia": "^3.1.1",
     "papaparse": "^5.4.1",
