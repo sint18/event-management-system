@@ -3,6 +3,7 @@ CREATE TABLE event_category
 (
     id            SERIAL PRIMARY KEY,
     category_name VARCHAR(255) NOT NULL,
+    active        BOOLEAN      NOT NULL DEFAULT TRUE,
     last_updated  TIMESTAMP    NOT NULL DEFAULT now()
 );
 
@@ -16,6 +17,7 @@ CREATE TABLE organizers
 (
     id             SERIAL PRIMARY KEY,
     organizer_name VARCHAR(255) NOT NULL,
+    active         BOOLEAN      NOT NULL DEFAULT TRUE,
     last_updated   TIMESTAMP    NOT NULL DEFAULT now()
 );
 
