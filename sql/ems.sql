@@ -18,6 +18,7 @@ CREATE TABLE organizers
     id             SERIAL PRIMARY KEY,
     organizer_name VARCHAR(255) NOT NULL,
     active         BOOLEAN      NOT NULL DEFAULT TRUE,
+    description    TEXT,
     last_updated   TIMESTAMP    NOT NULL DEFAULT now()
 );
 
