@@ -5,6 +5,7 @@
 	import type { ModalSettings } from '@skeletonlabs/skeleton';
 	import EditIcon from 'virtual:icons/mdi/create'
 	import CreateIcon from 'virtual:icons/mdi/plus'
+	import { setTableSource } from '$lib';
 
 	export let data;
 	export let form;
@@ -16,14 +17,6 @@
 		currentItemId = meta.detail[0];
 		formElement.action = '?/getCategory';
 		formElement.requestSubmit();
-	}
-
-	function setTableSource(headers: string[], sourceData: string[]): TableSource {
-		return {
-			head: headers,
-			body: tableMapperValues(sourceData, headers),
-			meta: tableMapperValues(sourceData, headers)
-		};
 	}
 
 	$: tableSource = data.categories.length != 0 ? setTableSource(Object.keys(data.categories[0]), data.categories) : undefined;

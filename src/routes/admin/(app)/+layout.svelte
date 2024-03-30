@@ -83,13 +83,11 @@
 				</ul>
 			</nav>
 			<hr class="border-stone-300">
-			<p class="font-bold pl-4 text-2xl">Utilities</p>
+			<p class="font-bold pl-4 text-2xl">Others</p>
 			<nav class="list-nav">
 				<ul>
 					<li><a href="/admin/categories" class={activeClass('/admin/categories')}>Categories</a></li>
-					<li><a href="/admin/categories/create" class={activeClass('/admin/categories/create')}>Create A Category</a></li>
 					<li><a href="/admin/organizers" class={activeClass('/admin/organizers')}>Organizers</a></li>
-					<li><a href="/admin/organizers/create" class={activeClass('/admin/organizers/create')}>Register Organizer</a></li>
 				</ul>
 			</nav>
 			<!--			<nav class="list-nav">-->

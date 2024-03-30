@@ -39,11 +39,8 @@ export async function load() {
       order by date_trunc('month', booking_datetime);
 	`, [])
 
-	console.log(bookingStatusAnalytics.rows);
-	const headers = Object.keys(top5Bookings.rows[0]);
 	return {
 		recentBookings: top5Bookings.rows,
-		recentBookingsHeaders: headers,
 		upcomingEvents: upcomingEvents.rows,
 		bookingStatusAnalytics: bookingStatusAnalytics.rows,
 		totalBookingsByMonth: totalBookingsByMonth.rows
