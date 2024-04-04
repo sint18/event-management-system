@@ -25,6 +25,7 @@ export const actions = {
 		const query = await db.query(`
         select id,
                category_name,
+               active,
                to_char(last_updated, 'YYYY-MM-DD HH24:MI:SS') as last_updated
         from event_category
         where id = $1;
@@ -82,6 +83,24 @@ export const actions = {
 			`, [categoryId]);
 			if (query.rowCount && query.rowCount > 0) {
 				return { success: true, message: 'Category successfully Deactivated' };
+			}
+		} catch (error: any) {
+			return fail(400, { error: true, message: error.message });
+		}
+
+	},
+	activate: async ({ request }) => {
+		const data = await request.formData();
+		const categoryId = <string>data.get('categoryId');
+
+		try {
+			const query = await db.query(`
+          update event_category
+          set active = true
+          where id = $1;
+			`, [categoryId]);
+			if (query.rowCount && query.rowCount > 0) {
+				return { success: true, message: 'Category successfully Activated' };
 			}
 		} catch (error: any) {
 			return fail(400, { error: true, message: error.message });

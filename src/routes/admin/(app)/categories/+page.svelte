@@ -52,6 +52,21 @@
 		}
 	};
 
+	const activateModal: ModalSettings = {
+		type: 'confirm',
+		// Data
+		title: 'Please Confirm Activation',
+		body: 'Are you sure you wish to proceed?',
+		buttonTextConfirm: 'Activate',
+		// TRUE if confirm pressed, FALSE if cancel pressed
+		response: (response: boolean) => {
+			if (response) {
+				formElement.action = '?/activate';
+				formElement.requestSubmit();
+			}
+		}
+	};
+
 </script>
 <div class="p-10 space-y-5 container h-full justify-center">
 	<h2 class="h2">Event Categories</h2>
@@ -103,10 +118,20 @@
 							<button type="button" on:click={() => {modalStore.trigger(updateModal)}} class="btn variant-filled-primary">
 								Update
 							</button>
-							<button type="button" on:click={() => {modalStore.trigger(deleteModal)}} class="btn variant-ghost-error">
-								Delete
-							</button>
+
 							<button type="reset" class="btn variant-ghost-surface">Reset</button>
+
+							{#if form?.categoryInfo && form?.categoryInfo['active'] === true}
+								<button type="button" on:click={() => {modalStore.trigger(deleteModal)}} class="btn variant-ghost-error">
+									Delete
+								</button>
+							{/if}
+
+							{#if form?.categoryInfo && form?.categoryInfo['active'] === false }
+								<button type="button" on:click={() => {modalStore.trigger(activateModal)}} class="btn variant-ghost-primary">
+									Activate
+								</button>
+							{/if}
 						</div>
 
 					</form>
