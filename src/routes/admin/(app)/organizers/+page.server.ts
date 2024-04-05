@@ -4,7 +4,7 @@ import { fail } from '@sveltejs/kit';
 export async function load() {
 	const query = await db.query(`
       select id                                             as "ID",
-             organizer_name                                 as "Category",
+             organizer_name                                 as "Organization",
              to_char(last_updated, 'DD/MM/YYYY HH24:MI:SS') as "Last Updated",
              case
                  when active then 'ACTIVE'

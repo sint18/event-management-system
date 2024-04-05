@@ -69,7 +69,7 @@
 
 </script>
 <div class="p-10 space-y-5 container h-full justify-center">
-	<h2 class="h2">Event Categories</h2>
+	<h2 class="h2">Event Organizers</h2>
 	<hr />
 	{#if form?.success}
 		<p class="alert variant-ghost-success">{form?.message}</p>
@@ -104,10 +104,10 @@
 						</label>
 
 						<label class="label">
-							<span>Category</span>
+							<span>Organization</span>
 							<input class="input" name="name" type="text"
 										 value={form?.organizerInfo ? form?.organizerInfo['organizer_name'] : ''}
-										 placeholder="Category Name" />
+										 placeholder="Organization Name" />
 						</label>
 
 						<label class="label">
@@ -161,7 +161,7 @@
 					<form class="space-y-5" method="post" action="?/create">
 
 						<label class="label">
-							<span>Category</span>
+							<span>Organization</span>
 							<input class="input" name="name" type="text"
 										 placeholder="Organization Name" />
 						</label>
