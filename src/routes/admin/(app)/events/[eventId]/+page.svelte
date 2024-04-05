@@ -124,26 +124,40 @@
 					</select>
 				{/if}
 			</label>
+
+			<label class="label">
+				<span>Event Category</span>
+				<input class="input variant-ghost" readonly={true} type="text" bind:value={data.eventInfo['category']} />
+			</label>
+
+			<label class="label">
+				<span>Event Organizer</span>
+				<input class="input variant-ghost" readonly={true} type="text" bind:value={data.eventInfo['organizer_name']} />
+			</label>
+
 			<label class="label">
 				<span>Last Updated</span>
 				<input class="input variant-ghost" readonly={true} type="datetime-local"
 							 bind:value={data.eventInfo['last_updated']} />
 			</label>
+
 			<label class="label">
 				<span>Created Date</span>
 				<input class="input variant-ghost" readonly={true} type="datetime-local"
 							 bind:value={data.eventInfo['created_at']} />
 			</label>
 
-			<div class="grid grid-cols-subgrid gap-4 col-span-2">
-				<div class="col-start-1">
-					<label class="label">
-						<span>Description</span>
-						<textarea class="textarea" readonly={readOnlyInputs} rows="4" bind:value={data.eventInfo['description']}
-											name="description" placeholder="Enter a short description about the event" />
-					</label>
-				</div>
-			</div>
+			<label class="label">
+				<span>Description</span>
+				<textarea class="textarea" readonly={readOnlyInputs} rows="4" bind:value={data.eventInfo['description']}
+									name="description" placeholder="Enter a short description about the event" />
+			</label>
+
+			<label class="label">
+				<span>Event Organizer Description</span>
+				<textarea class="textarea variant-ghost" readonly={true} rows="4" bind:value={data.eventInfo['organizer_details']} />
+			</label>
+
 
 			{#if (!readOnlyInputs)}
 				<div class="grid grid-cols-6 gap-4">

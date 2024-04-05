@@ -4,18 +4,23 @@ export async function load({params}){
 	const eventId: string = params.eventId
 
 	const result = await db.query(`
-      select id                                               as event_id,
+      select e.id                                               as event_id,
              event_name,
-             description,
+             e.description,
+             ec.category_name as category,
+             o.organizer_name,
+             o.description as organizer_details,
              to_char(start_datetime, 'YYYY-MM-DD HH24:MI:SS') as start_datetime,
              to_char(end_datetime, 'YYYY-MM-DD HH24:MI:SS')   as end_datetime,
              (end_datetime - start_datetime)::text            as duration,
              location,
              status,
-             to_char(last_updated, 'YYYY-MM-DD HH24:MI:SS')   as last_updated,
+             to_char(e.last_updated, 'YYYY-MM-DD HH24:MI:SS')   as last_updated,
              to_char(created_at, 'YYYY-MM-DD HH24:MI:SS')     as created_at
-      from events
-      where id = $1
+      from events e
+      join event_category ec on ec.id = e.category_id
+      join public.organizers o on o.id = e.organizer_id
+      where e.id = $1
 		`, [eventId]
 	)
 
