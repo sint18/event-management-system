@@ -110,3 +110,29 @@ CREATE TABLE user_session
     expires_at TIMESTAMPTZ NOT NULL,
     user_id    INT         NOT NULL REFERENCES users (id)
 );
+
+
+-- Procedure for updating the status routinely
+-- MUST BE RUN AS A SCHEDULED TASK
+CREATE OR REPLACE PROCEDURE update_task()
+    LANGUAGE plpgsql
+AS
+$$
+BEGIN
+    -- Update all the bookings to absent when the current time passed the event end date
+    update bookings b
+    set status = 'absent'
+    from events e
+    where e.id = b.event_id
+      and b.status = 'booked'
+      and e.end_datetime <= now();
+
+    -- Update all the events' status to past when the current time passed the event end date
+    update events
+    set status = 'past'
+    where status = 'upcoming'
+      and end_datetime <= now();
+
+    COMMIT;
+END;
+$$;
