@@ -15,11 +15,11 @@ export async function load() {
 	`, []);
 
 	const upcomingEvents = await db.query(`
-      select e.id as "ID",
-             e.event_name as "Event",
+      select e.id                                               as "ID",
+             e.event_name                                       as "Event",
              to_char(e.start_datetime, 'DD/MM/YYYY HH24:MI:SS') as "Start Date",
-             e.location as "Location",
-             upper(e.status) as "Status"
+             e.location                                         as "Location",
+             upper(e.status)                                    as "Status"
       from events e
       order by start_datetime desc
       limit 5;
@@ -29,7 +29,24 @@ export async function load() {
       select initcap(status) as status, count(id)
       from bookings
       group by status;
-	`, [])
+	`, []);
+
+	const userCountQuery = await db.query(`
+      select count(users.id)
+      from users
+      join roles r on r.id = users.role_id
+      group by r.role_name
+	`, []);
+
+	const eventCountQuery = await db.query(`
+      select count(id)
+      from events
+	`, []);
+
+	const bookingCountQuery = await db.query(`
+      select count(id)
+      from bookings
+	`, []);
 
 	const totalBookingsByMonth = await db.query(`
       select count(id)                                               as bookings,
@@ -37,12 +54,18 @@ export async function load() {
       from bookings
       group by date_trunc('month', booking_datetime)
       order by date_trunc('month', booking_datetime);
-	`, [])
+	`, []);
 
 	return {
 		recentBookings: top5Bookings.rows,
 		upcomingEvents: upcomingEvents.rows,
 		bookingStatusAnalytics: bookingStatusAnalytics.rows,
-		totalBookingsByMonth: totalBookingsByMonth.rows
+		totalBookingsByMonth: totalBookingsByMonth.rows,
+		counts: {
+			users: userCountQuery.rows[1]['count'],
+			admins: userCountQuery.rows[0]['count'],
+			events: eventCountQuery.rows[0]['count'],
+			bookings: bookingCountQuery.rows[0]['count']
+		}
 	};
 }
