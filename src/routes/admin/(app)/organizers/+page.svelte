@@ -3,8 +3,8 @@
 	import { enhance } from '$app/forms';
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import type { ModalSettings } from '@skeletonlabs/skeleton';
-	import EditIcon from 'virtual:icons/mdi/create'
-	import CreateIcon from 'virtual:icons/mdi/plus'
+	import EditIcon from 'virtual:icons/mdi/create';
+	import CreateIcon from 'virtual:icons/mdi/plus';
 	import { setTableSource } from '$lib';
 
 	export let data;
@@ -15,11 +15,11 @@
 
 	function selectionHandler(meta: CustomEvent) {
 		currentItemId = meta.detail[0];
-		formElement.action = '?/getCategory';
+		formElement.action = '?/getOrg';
 		formElement.requestSubmit();
 	}
 
-	$: tableSource = data.categories.length != 0 ? setTableSource(Object.keys(data.categories[0]), data.categories) : undefined;
+	$: tableSource = data.organizers.length != 0 ? setTableSource(Object.keys(data.organizers[0]), data.organizers) : undefined;
 
 	// ---------- Modal Config -------------------
 	const deleteModal: ModalSettings = {
@@ -87,48 +87,62 @@
 
 		<Accordion autocollapse>
 			<AccordionItem open>
-				<svelte:fragment slot="lead"><EditIcon></EditIcon></svelte:fragment>
-				<svelte:fragment slot="summary"><strong>Edit Category Information</strong></svelte:fragment>
+				<svelte:fragment slot="lead">
+					<EditIcon></EditIcon>
+				</svelte:fragment>
+				<svelte:fragment slot="summary"><strong>Edit Organizer Information</strong></svelte:fragment>
 				<svelte:fragment slot="content">
 					<form class="space-y-5" method="post" bind:this={formElement} use:enhance={({ formData, action }) => {
-						if(action.search === '?/getCategory' && currentItemId) {
-							formData.set('categoryId', currentItemId)
+						if(action.search === '?/getOrg' && currentItemId) {
+							formData.set('orgId', currentItemId)
 						}
 					}}>
 						<label class="label">
 							<span>ID</span>
-							<input class="input" type="number" name="categoryId" placeholder="ID"
-										 value={form?.categoryInfo ? form?.categoryInfo['id'] : ''} readonly />
+							<input class="input" type="number" name="orgId" placeholder="ID"
+										 value={form?.organizerInfo ? form?.organizerInfo['id'] : ''} readonly />
 						</label>
 
 						<label class="label">
 							<span>Category</span>
 							<input class="input" name="name" type="text"
-										 value={form?.categoryInfo ? form?.categoryInfo['category_name'] : ''}
+										 value={form?.organizerInfo ? form?.organizerInfo['organizer_name'] : ''}
 										 placeholder="Category Name" />
+						</label>
+
+						<label class="label">
+							<span>Description</span>
+							<textarea class="textarea" rows="4"
+												placeholder="Organization Details"
+												name="description"
+												value={form?.organizerInfo ? form?.organizerInfo['description'] : ''} />
 						</label>
 
 						<label class="label">
 							<span>Last Updated</span>
 							<input class="input" type="datetime-local"
-										 value={form?.categoryInfo ? form?.categoryInfo['last_updated'] : ''}
+										 value={form?.organizerInfo ? form?.organizerInfo['last_updated'] : ''}
 										 placeholder="" readonly />
 						</label>
+
 						<div class="space-x-5">
-							<button type="button" on:click={() => {modalStore.trigger(updateModal)}} class="btn variant-filled-primary">
+							<button type="button" on:click={() => {modalStore.trigger(updateModal)}}
+											class="btn variant-filled-primary">
 								Update
 							</button>
 
 							<button type="reset" class="btn variant-ghost-surface">Reset</button>
 
-							{#if form?.categoryInfo && form?.categoryInfo['active'] === true}
-								<button type="button" on:click={() => {modalStore.trigger(deleteModal)}} class="btn variant-ghost-error">
+							{#if form?.organizerInfo && form?.organizerInfo['active'] === true}
+								<button type="button" on:click={() => {modalStore.trigger(deleteModal)}}
+												class="btn variant-ghost-error">
 									Delete
 								</button>
 							{/if}
 
-							{#if form?.categoryInfo && form?.categoryInfo['active'] === false }
-								<button type="button" on:click={() => {modalStore.trigger(activateModal)}} class="btn variant-ghost-primary">
+							{#if form?.organizerInfo && form?.organizerInfo['active'] === false }
+								<button type="button" on:click={() => {modalStore.trigger(activateModal)}}
+												class="btn variant-ghost-primary">
 									Activate
 								</button>
 							{/if}
@@ -139,17 +153,24 @@
 				</svelte:fragment>
 			</AccordionItem>
 			<AccordionItem>
-				<svelte:fragment slot="lead"><CreateIcon></CreateIcon></svelte:fragment>
-				<svelte:fragment slot="summary"><strong>Create New Category</strong></svelte:fragment>
+				<svelte:fragment slot="lead">
+					<CreateIcon></CreateIcon>
+				</svelte:fragment>
+				<svelte:fragment slot="summary"><strong>Create New Organizer</strong></svelte:fragment>
 				<svelte:fragment slot="content">
 					<form class="space-y-5" method="post" action="?/create">
 
 						<label class="label">
 							<span>Category</span>
 							<input class="input" name="name" type="text"
-										 placeholder="Category Name" />
+										 placeholder="Organization Name" />
 						</label>
 
+						<label class="label">
+							<span>Description</span>
+							<textarea class="textarea" rows="4" name="description"
+												placeholder="Organization Details" />
+						</label>
 
 						<label class="label">
 							<span>Status</span>
