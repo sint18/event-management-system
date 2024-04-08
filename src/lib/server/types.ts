@@ -14,6 +14,11 @@ export interface PasswordForm {
 	confirmNewPassword: string
 }
 
+export interface EmailForm {
+	newEmail: string,
+	password: string
+}
+
 export interface UserAccount {
 	username: string,
 	password: string

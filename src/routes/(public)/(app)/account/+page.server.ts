@@ -64,5 +64,37 @@ export const actions = {
 			return fail (400, { error: true, message: 'Incorrect password, try again!'})
 		}
 		return fail (400, { error: true, message: 'Something went wrong, try again!'})
+	},
+	changeEmail: async ({ request, locals }) => {
+		if (!locals.user) {
+			return fail(400, { error: true, message: 'Please log in again'})
+		}
+		const userId = locals.user.id
+		const data = await request.formData()
+		const newEmail = <string> data.get('newEmail')
+		const password = <string> data.get('password')
+
+		const query = await db.query(`
+        select password
+        from users
+        where id = $1;
+		`, [String(userId)])
+
+		if(query.rowCount && query.rowCount > 0) {
+			const passwordMatched = await verify(password, query.rows[0]['password'])
+			if (passwordMatched) {
+				const updateQuery = await db.query(`
+            update users
+            set email = $1, last_updated = now()
+            where id = $2;
+				`, [newEmail, String(userId)])
+
+				if (updateQuery.rowCount && updateQuery.rowCount > 0){
+					return { success: true, message: 'Email successfully changed'}
+				}
+			}
+			return fail (400, { error: true, message: 'Incorrect password, try again!'})
+		}
+		return fail (400, { error: true, message: 'Something went wrong, try again!'})
 	}
 }
