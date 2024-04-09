@@ -32,7 +32,7 @@ export async function load({ url, params, locals }) {
 	`, [userId]);
 
 	const queryRoles = await db.query(`
-      select id as roles_id, role_name
+      select id as role_id, role_name
       from roles;
 	`, []);
 

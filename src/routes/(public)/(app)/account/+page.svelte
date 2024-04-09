@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { checkStatus } from '$lib';
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
 	import ChangePasswordModal from '$lib/ChangePasswordModal.svelte';

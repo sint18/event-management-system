@@ -62,8 +62,23 @@
 				</tr>
 
 				<tr>
+					<th>Organizer</th>
+					<td>{data.eventInfo['organizer_name']}</td>
+				</tr>
+
+				<tr>
+					<th>Organizer Description</th>
+					<td>{data.eventInfo['organizer_description']}</td>
+				</tr>
+
+				<tr>
+					<th>Category</th>
+					<td>{data.eventInfo['category_name']}</td>
+				</tr>
+
+				<tr>
 					<th>Status</th>
-					<td>{data.eventInfo['status']}</td>
+					<td class="uppercase">{data.eventInfo['status']}</td>
 				</tr>
 
 				</tbody>

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	export let form
+	export let data
 
 </script>
 <div class="p-10 space-y-5 container h-full justify-center">
@@ -8,7 +9,7 @@
 	<h2 class="h2">Create An Event</h2>
 	<hr />
 	{#if form?.success}
-		<p class="alert variant-ghost-success">New Event Successfully Created!</p>
+		<p class="alert variant-ghost-success">{form?.message}</p>
 	{/if}
 	{#if form?.missing}
 		<p class="alert variant-ghost-error">{form?.item} is missing!</p>
@@ -39,6 +40,28 @@
 			<span>Event Venue</span>
 			<input class="input" type="text" name="venue" placeholder="Enter name of the venue" />
 		</label>
+
+		{#if data.categories }
+		<label class="label">
+			<span>Category</span>
+			<select class="select" name="categoryId">
+				{#each data.categories as row }
+				<option value={row['id']}>{row['category_name']}</option>
+				{/each}
+			</select>
+		</label>
+		{/if}
+
+		{#if data.organizers }
+		<label class="label">
+			<span>Organizer</span>
+			<select class="select" name="organizerId">
+				{#each data.organizers as row }
+				<option value={row['id']}>{row['organizer_name']}</option>
+				{/each}
+			</select>
+		</label>
+		{/if}
 
 		<label class="label">
 			<span>Event Status</span>
