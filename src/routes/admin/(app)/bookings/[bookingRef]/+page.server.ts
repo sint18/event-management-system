@@ -1,5 +1,6 @@
 import * as db from '$lib/server/db';
 import { fail } from '@sveltejs/kit';
+import { addPoints } from '$lib/server/points';
 
 export async function load({ params }) {
 	const bookingRef: string = params.bookingRef;
@@ -52,6 +53,11 @@ export const actions = {
             last_updated    = now()
         where id = $3;
 		`, [seats, status, bookingId]);
+
+		if (status === 'present') {
+			// Points can be adjusted
+			await addPoints(bookingId, 10)
+		}
 
 		if (queryResult.rowCount && queryResult.rowCount > 0) {
 			return { success: true, message: 'Booking successfully updated' };
