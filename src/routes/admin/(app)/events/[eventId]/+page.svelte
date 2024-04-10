@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { invalidateAll } from '$app/navigation';
-	import { popup, getModalStore } from '@skeletonlabs/skeleton';
+	import { goto, invalidateAll } from '$app/navigation';
+	import { popup, getModalStore, Table } from '@skeletonlabs/skeleton';
 	import type { PopupSettings, ModalSettings } from '@skeletonlabs/skeleton';
+	import BookingStatusChart from '$lib/charts/BookingStatusChart.svelte';
+	import { setTableSource } from '$lib';
 
 	export let data;
 	export let form;
@@ -10,10 +12,16 @@
 	let formElement: HTMLFormElement;
 	const modalStore = getModalStore();
 
+	$: bookings = data.bookings && data.bookings.length != 0 ? setTableSource(Object.keys(data.bookings[0]), data.bookings) : undefined;
+
 	// --------------- Functions ----------------------
 	function resetForm() {
 		invalidateAll();
 		readOnlyInputs = true;
+	}
+
+	function selectionHandler(e: CustomEvent) {
+		goto(`/admin/bookings/${e.detail[0]}`)
 	}
 
 	// ---------- Modal Config -------------------
@@ -158,7 +166,6 @@
 				<textarea class="textarea variant-ghost" readonly={true} rows="4" bind:value={data.eventInfo['organizer_details']} />
 			</label>
 
-
 			{#if (!readOnlyInputs)}
 				<div class="grid grid-cols-6 gap-4">
 					<button type="button" class="btn variant-filled-primary" on:click={() => modalStore.trigger(updateModal)}>
@@ -167,7 +174,27 @@
 					<button type="button" on:click={() => resetForm()} class="btn variant-filled">Cancel</button>
 				</div>
 			{/if}
+			{#if data.bookings }
+			<span class="font-semibold">Total Bookings : <span class="chip variant-filled-surface">{data.bookings.length}</span></span>
+			{/if}
 
 		</form>
+
+		{#if data.bookingAnalytics && data.bookingAnalytics.length !== 0 }
+		<div class="grid grid-cols-2 gap-4">
+			<div>
+					<BookingStatusChart sourceData={data.bookingAnalytics}></BookingStatusChart>
+			</div>
+			<div class="space-y-5">
+				<h3 class="text-center h3">Bookings</h3>
+				{#if bookings}
+				<Table source={bookings} interactive={true} on:selected={selectionHandler}></Table>
+				{/if}
+			</div>
+		</div>
+		{/if}
+
+
 	{/if}
+
 </div>

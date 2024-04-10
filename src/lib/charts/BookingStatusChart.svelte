@@ -7,11 +7,11 @@
 	Chart.defaults.color = '#ffffff'
 
 	const chart1Data: ChartData = {
-		labels: sourceData.bookingStatusAnalytics.map(row => row['status']),
+		labels: sourceData.map(row => row['status']),
 		datasets: [
 			{
 				label: 'Booking Counts',
-				data: sourceData.bookingStatusAnalytics.map(row => row['count'])
+				data: sourceData.map(row => row['count'])
 			}
 		]
 	}

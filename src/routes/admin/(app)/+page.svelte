@@ -52,7 +52,7 @@
 
 		<div class="col-span-2 card p-4">
 <!--			<h3 class="h3 text-center">Total Bookings grouped by Status</h3>-->
-			<BookingStatusChart sourceData={data}></BookingStatusChart>
+			<BookingStatusChart sourceData={data.bookingStatusAnalytics}></BookingStatusChart>
 		</div>
 
 		<div class="col-span-3 card p-4">
