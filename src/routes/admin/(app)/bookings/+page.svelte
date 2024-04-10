@@ -19,8 +19,10 @@
 				<input class="input" type="search" name="bookingRef" placeholder="Enter Booking Reference Number" required/>
 			</label>
 		</div>
-		<button type="submit" class="btn variant-filled-surface">Search</button>
-		<button type="reset" class="btn variant-filled-surface">Clear</button>
+		<div class="space-x-4">
+			<button type="submit" class="btn variant-filled-primary">Search</button>
+			<button type="reset" class="btn variant-filled-surface">Clear</button>
+		</div>
 	</form>
 	<!--	<hr />-->
 	<h3 class="h3">Search Result</h3>
