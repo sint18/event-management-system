@@ -90,49 +90,52 @@
 		</AccordionItem>
 	</Accordion>
 
-	<div class="grid grid-cols-1 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 gap-4">
-		{#if data.events }
-			{#each data.events as eachEvent }
-				<div class="card p-4 bg-initial">
-					<header class="card-header">
-						<span class="font-bold text-xl">{eachEvent['event_name']}</span>
-					</header>
-					<section class="p-4 space-y-4">
-						<div class="h-4">
-							<p class="truncate ...">{eachEvent['description']}</p>
+	{#if data.events }
+		{#if data.events.length !== 0}
+			<div class="grid grid-cols-1 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 gap-4">
+				{#each data.events as eachEvent }
+						<div class="card p-4 bg-initial">
+							<header class="card-header">
+								<span class="font-bold text-xl">{eachEvent['event_name']}</span>
+							</header>
+							<section class="p-4 space-y-4">
+								<div class="h-4">
+									<p class="truncate ...">{eachEvent['description']}</p>
+								</div>
+								<dl class="list-dl">
+									<div class="flex-auto">
+										<dt><CalendarClock></CalendarClock></dt>
+										<dd>
+											<span>{eachEvent['start_datetime']}</span>
+										</dd>
+									</div>
+									<div class="flex-auto">
+										<dt><StatusIcon></StatusIcon></dt>
+										<dd>
+											<span class="uppercase chip w-24 font-semibold {checkStatus(eachEvent['status'])}">{eachEvent['status']}</span>
+										</dd>
+									</div>
+
+									<div class="flex-auto">
+										<dt><MapIcon></MapIcon></dt>
+										<dd>
+											<span>{eachEvent['location']}</span>
+										</dd>
+									</div>
+
+								</dl>
+							</section>
+							<footer class="card-footer">
+								<a href="/event/{eachEvent['event_id']}" class="btn variant-ghost-surface">
+									<span><ArrowIcon></ArrowIcon></span>
+									<span>See more</span>
+								</a>
+							</footer>
 						</div>
-						<dl class="list-dl">
-							<div class="flex-auto">
-								<dt><CalendarClock></CalendarClock></dt>
-								<dd>
-									<span>{eachEvent['start_datetime']}</span>
-								</dd>
-							</div>
-							<div class="flex-auto">
-								<dt><StatusIcon></StatusIcon></dt>
-								<dd>
-									<span class="uppercase chip w-24 font-semibold {checkStatus(eachEvent['status'])}">{eachEvent['status']}</span>
-								</dd>
-							</div>
-
-							<div class="flex-auto">
-								<dt><MapIcon></MapIcon></dt>
-								<dd>
-									<span>{eachEvent['location']}</span>
-								</dd>
-							</div>
-
-						</dl>
-					</section>
-					<footer class="card-footer">
-						<a href="/event/{eachEvent['event_id']}" class="btn variant-ghost-surface">
-							<span><ArrowIcon></ArrowIcon></span>
-							<span>See more</span>
-						</a>
-					</footer>
-				</div>
-			{/each}
+				{/each}
+			</div>
+		{:else}
+			<p class="alert variant-ghost-error">No available events</p>
 		{/if}
-
-	</div>
+	{/if}
 </div>
