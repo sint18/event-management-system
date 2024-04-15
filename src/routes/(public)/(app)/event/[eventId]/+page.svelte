@@ -87,6 +87,9 @@
 		{#if form?.success }
 			<p class="alert variant-ghost-success">{form?.message}</p>
 		{/if}
+		{#if form?.error }
+			<p class="alert variant-ghost-error">{form?.message}</p>
+		{/if}
 		<form method="post" use:enhance={({formData}) => {
 			if (!data.userId) {
 				formData.append('username', username)

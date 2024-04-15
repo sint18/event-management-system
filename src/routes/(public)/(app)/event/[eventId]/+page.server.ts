@@ -1,4 +1,5 @@
 import * as db from '$lib/server/db';
+import { fail } from '@sveltejs/kit';
 
 export async function load({ params }) {
 	const eventId: string = params.eventId;
@@ -33,16 +34,20 @@ export const actions = {
 		const data = await request.formData();
 		const eventId = <string>data.get('eventId');
 		const username = <string>locals.user?.username ?? data.get('username');
-		const queryResult = await db.query(`
+		try {
+			const queryResult = await db.query(`
                 insert into bookings (event_id, user_id, status)
                 values ($1, (select id
                              from users
                              where username = $2), 'booked')
 			`, [eventId, username]
-		);
+			);
 
-		if (queryResult.rowCount && queryResult.rowCount > 0) {
-			return { success: true, message: 'Booking successful!\nA confirmation email has been sent.' };
+			if (queryResult.rowCount && queryResult.rowCount > 0) {
+				return { success: true, message: 'Booking successful!\nA confirmation email has been sent.' };
+			}
+		} catch (error) {
+			return fail(404, { error: true, message: 'Something went wrong, try again!'});
 		}
 	}
 };
