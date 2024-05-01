@@ -46,7 +46,7 @@ export const actions = {
 					...sessionCookie.attributes
 				});
 				// --------------------------------
-				return redirect(300, '/admin/')
+				return redirect(302, '/admin/')
 			}
 		}
 		return fail(400, { error: true, message: 'Incorrect password or username'})

@@ -150,7 +150,7 @@ export const actions = {
 	},
 	logoutOtherSessions: async ({ locals }) => {
 		if (!locals.user) {
-			return redirect(304, '/admin/login');
+			return redirect(302, '/admin/login');
 		}
 		const userId = locals.user.id
 		await lucia.invalidateUserSessions(Number(userId));

@@ -105,7 +105,7 @@ export const actions = {
 		`, [id]);
 
 		if (queryResult.rowCount && queryResult.rowCount > 0) {
-			throw redirect(302, '/events');
+			return redirect(302, '/events');
 		}
 	}
 };
