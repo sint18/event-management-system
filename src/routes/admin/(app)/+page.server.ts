@@ -62,8 +62,8 @@ export async function load() {
 		bookingStatusAnalytics: bookingStatusAnalytics.rows,
 		totalBookingsByMonth: totalBookingsByMonth.rows,
 		counts: {
-			users: userCountQuery.rows[1]['count'],
-			admins: userCountQuery.rows[0]['count'],
+			users: userCountQuery.rows[0]['count'],
+			admins: userCountQuery.rows[1]['count'],
 			events: eventCountQuery.rows[0]['count'],
 			bookings: bookingCountQuery.rows[0]['count']
 		}
