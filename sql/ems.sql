@@ -92,7 +92,7 @@ CREATE TABLE bookings
     event_id         INT         NOT NULL,
     user_id          INT         NOT NULL,
     booking_datetime TIMESTAMP   NOT NULL DEFAULT now(),
-    booking_ref      VARCHAR(20) NOT NULL DEFAULT to_char(now(), 'YYYYMMDDHH24MISSMS') UNIQUE,
+    booking_ref      VARCHAR(20) NOT NULL DEFAULT UPPER(substr(md5(random()::text), 1, 16)) UNIQUE,
     ticket_quantity  INT         NOT NULL DEFAULT 1,
     status           VARCHAR(20) NOT NULL,
     remark           TEXT,
