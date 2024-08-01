@@ -67,7 +67,7 @@ export async function load() {
 			actualAttendees = Number(row.count)
 		}
 	})
-	const attendanceRate = (actualAttendees / expectedAttendees) * 100
+	const attendanceRate = Math.round((actualAttendees / expectedAttendees) * 100)
 
 	return {
 		recentBookings: top5Bookings.rows,
