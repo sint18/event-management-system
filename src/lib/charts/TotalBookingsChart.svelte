@@ -18,7 +18,7 @@
 	}
 
 	const chart1Config: ChartConfiguration = {
-		type: 'bar',
+		type: 'line',
 		data: chart1Data,
 		options: {
 			responsive: true,

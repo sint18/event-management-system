@@ -46,8 +46,9 @@
 			<p class="text-xl">Bookings</p>
 			<p class="text-5xl font-semibold">{data?.counts.bookings}</p>
 		</div>
-		<div>
-			Cancelled Bookings
+		<div class="card p-4">
+			<p class="text-xl">Attendance Rate</p>
+			<p class="text-5xl font-semibold">{data?.counts.attendance}%</p>
 		</div>
 
 		<div class="col-span-2 card p-4">

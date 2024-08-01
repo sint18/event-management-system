@@ -4,7 +4,7 @@ export async function load() {
 	const top5Bookings = await db.query(`
       select bookings.booking_ref                                        as "Booking Ref.",
              to_char(bookings.booking_datetime, 'DD/MM/YYYY HH24:MI:SS') as "Booking Date",
-             upper(bookings.status),
+             upper(bookings.status)                                      as "Status",
              concat(u.first_name, ' ', u.last_name)                      as "Name",
              e.event_name                                                as "Event Name"
       from bookings
@@ -56,6 +56,19 @@ export async function load() {
       order by date_trunc('month', booking_datetime);
 	`, []);
 
+	console.log(bookingStatusAnalytics.rows);
+
+	let expectedAttendees = 0
+	let actualAttendees = 0
+	bookingStatusAnalytics.rows.forEach(row => {
+		if (row.status !== "Present") {
+			expectedAttendees += Number(row.count)
+		} else {
+			actualAttendees = Number(row.count)
+		}
+	})
+	const attendanceRate = (actualAttendees / expectedAttendees) * 100
+
 	return {
 		recentBookings: top5Bookings.rows,
 		upcomingEvents: upcomingEvents.rows,
@@ -65,7 +78,8 @@ export async function load() {
 			users: userCountQuery.rows[0]['count'],
 			admins: userCountQuery.rows[1]['count'],
 			events: eventCountQuery.rows[0]['count'],
-			bookings: bookingCountQuery.rows[0]['count']
+			bookings: bookingCountQuery.rows[0]['count'],
+			attendance: attendanceRate
 		}
 	};
 }
